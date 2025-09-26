@@ -5,13 +5,13 @@ PROPS_STRING="
 
 \# Carefully tested props tweaks for audio and extras. It would fix cheap DACs sounding harsh. Or grainy vocal you usually find from your phone speakers.
 
+\# It does similar stuffs to other audio mods (like Audio Misc Settings, Audio Samplerate changer,...) except for this one causes no bugs (Failed phone calls, bluetooth has no sound) and the behaviours are transparent. Also, the sound is based on my taste. And my taste is good hehe.
+
 \# This mod gain me trust with the Harman target. Turn out the shoutiness was never from the target itself.
 
 \# Gain root access with "su" then paste the entire script in Termux after installing the MagiskHidePropsConf module
 
 \# In case of wanting to fallback, use "props -r"
-
-\# It does similar stuffs to other audio mods (like Audio Misc Settings, Audio Samplerate changer,...) except for this one causes no bugs (Failed phone calls, bluetooth has no sound) and the behaviours are transparent. Also, the sound is based on my taste. And my taste is good hehe.
 
 vm.laptop_mode=1
 
