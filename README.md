@@ -225,6 +225,8 @@ persist.vendor.audio.playback.mch.downsample=false
 
 \# Offload means passing audio processing to DSP instead of CPU, potentially saving power though may not be noticeable. Require testing
 
+\# In my case, disabling offloading gives me slightly purer sound and less of the vague and foggy sound. EQ works on all apps without crashing any apps.
+
 \# Offload true, sf hw 1=> EQ works on all apps, some weird old games would crash
 
 \# Offload true, sf hw 0 => EQ only works with music player. Stable
