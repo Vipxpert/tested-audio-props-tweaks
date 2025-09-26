@@ -11,7 +11,7 @@ PROPS_STRING="
 
 \# In case of wanting to fallback, use "props -r"
 
-
+\# It does similar stuffs to other audio mods (like Audio Misc Settings, Audio Samplerate changer,...) except for this one causes no bugs (Failed phone calls, bluetooth has no sound) and the behaviours are transparent. Also, the sound is based on my taste. And my taste is good hehe.
 
 vm.laptop_mode=1
 
