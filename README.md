@@ -1,7 +1,11 @@
 # tested audio props tweaks
-Carefully tested props tweaks for audio and extras
+
 
 PROPS_STRING="
+
+\# Carefully tested props tweaks for audio and extras. It would fix cheap DACs sounding harsh. Or grainy vocal you usually find from your phone speakers.
+
+\n This mod gain me trust with the Harman target. Turn out the shoutiness was never from the target itself.
 
 \# Gain root access with "su" then paste the entire script in Termux after installing the MagiskHidePropsConf module
 
