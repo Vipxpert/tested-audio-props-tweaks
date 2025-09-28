@@ -1,9 +1,8 @@
 PROPS_STRING="
 # Carefully tested props tweaks for audio and extras. It would fix cheap DACs sounding harsh. Or grainy vocal you usually find from your phone speakers.
-# It does similar stuffs to other audio mods (like Audio Misc Settings, Audio Samplerate changer,...) except for this one causes no bugs (Failed phone calls, bluetooth has no sound) and the behaviours are transparent. Also, the sound is based on my taste. And my taste is good hehe.
 # This mod gain me trust with the Harman target. Turn out the shoutiness was never from the target itself.
-# Gain root access with "su" then paste the entire script in Termux after installing the MagiskHidePropsConf module
-# In case of wanting to fallback, use "props -r"
+# Gain root access with \"su\" then paste the entire script in Termux after installing the MagiskHidePropsConf module
+# In case of wanting to fallback, use \"props -r\"
 
 vm.laptop_mode=1
 vm.swapiness=0
@@ -73,7 +72,7 @@ vendor.audio.usb.pcm.direct=true
 audio.drc.enabled=0
 # Disable limiter kicking in caused by DRC disabling
 vendor.audio.matrix.limiter.enable=0
-# Disable data compression
+# Disable compression
 vendor.audio.feature.compress_meta_data.enable=false
 vendor.audio.feature.compress_in.enable=false
 vendor.audio.feature.compr_cap.enable=false
@@ -94,7 +93,7 @@ tunnel.decode=false
 vendor.audio.tunnel.encode=false
 lpa.deepbuffer.enable=0
 
-# May not be supported at all. Intuitively resampling at such resolution should cause less artifacts. Felt like better but could be placebo. I didn't a/b enough but no harm done.
+# May not be supported at all. Intuitively, resampling at such resolution should cause less artifacts. Felt like better but could be placebo. I didn't a/b enough but no harm done.
 ro.audio.samplerate=768000
 ro.audio.pcm.samplerate=768000
 af.resample=768000
@@ -112,37 +111,38 @@ persist.vendor.audio_hal.dsp_bit_width_enforce_mode=32
 # Try preserving multi-channel instead of downsampling to stereo
 persist.vendor.audio.playback.mch.downsample=false
 
-# Offload means passing audio processing to DSP instead of CPU, potentially saving power though may not be noticeable. Require testing.
-# In my case, disabling offloading gives me slightly purer sound and less of the vague and foggy sound. EQ works on all apps without crashing any apps.
+# Offload means passing audio processing to DSP instead of CPU, potentially saving power though may not be noticeable. Require testing
+# In my case, disabling offloading gives me slightly purer sound and less of the vague and foggy sound.
 # Offload true, sf hw 1=> EQ works on all apps, some weird old games would crash
-# Offload true, sf hw 0 => EQ only works with music player. Stable
-# Offload false, sf hw 1 => EQ works on all apps, no apps crash
+# Offload true, sf hw 0 => EQ only works with music player. Stable.
+# Offload false, sf hw 1 => EQ works on all apps, some weird old games would crash
 # Offload false, sf hw 0 => EQ works on all apps, no apps crash, clean sound
 debug.sf.hw=0
 audio.offload.enable=false
 vendor.audio.offload.enable=false
-# Don't change. Settings it to 1 with either offload enabled or disabled causes narrow sound-stage and shrills.
-mpq.audio.decode=0
 # Redundant safeguard
 audio.offload.disable=true
+# Low power audio, theoretically is offload. Set it true and it sounds tasteless. 
+persist.vendor.btstack.enable.lpa=false
+# Don't change. Settings it to 1 with either offload enabled or disabled causes narrow sound-stage and shrills.
+mpq.audio.decode=0
 # PCM offload. Don't add 16 or 24-bit configuration here. They override 32-bit and causes terrible peaks and shout.
 audio.offload.32bit.enable=false
 vendor.audio.offload.32bit.enable=false
 
-# Offload settings, only take effect if offload is enabled in my tests. Flipping these switches don't make any changes.
-# Generally these flags settings to true is approved in most mods and community. If offloading's important to you, test for me. The DSP processing on my phone's just isn't my cup of tea maybe. I have a lot better sound-stage and pureness in the sound with the CPU doing it.
+# Settings all to true with offload enabled is approved in most mods and community. If offloading's important to you, test for me. The DSP processing on my phone's just isn't my cup of tea maybe. I have a lot better sound-stage and pureness in the sound with the CPU doing it.
 # Video/audio offload (test with YouTube, Netflix,...)
-audio.offload.video=true
-# Passthrough (disable decode before HDMI/USB)
-audio.offload.passthrough=true
-# Mutiple sound sessions (like notification + music) offload. If set to false, the DSP processes only one stream at a time.
-audio.offload.multiple.enabled=true
-# Enables multiple concurrent AAC streams in offload mode. Useful for systems mixing AAC tracks or picture-in-picture video.
+audio.offload.video=false
+# Mutiple sound sessions (like notification + music) offload. If set to false, the DSP processes only one stream at a time. (Certainly sure this should be off)
+audio.offload.multiple.enabled=false
+# Enables multiple concurrent AAC streams in offload mode. Useful for systems mixing AAC tracks or picture-in-picture video. Take effect even if offload is disabled. Sound much better if true.
 audio.offload.multiaac.enable=true
-# Gapless in offload (no effect since offload is disabled anyway)
+# Gapless playback. Basically stop the DSP from turning off instantly. Would consume a bit more battery. Doesn't seem to affect the sound.
 audio.offload.gapless.enabled=true
-# Offload metadata/track handling
-audio.offload.track.enable=true
+# Offload metadata/track handling (it would override offload)
+audio.offload.track.enable=false
+# Passthrough instead of decoding into PCM before HDMI/USB (it shrills after decoding please keep it true)
+audio.offload.passthrough=true
 
 # Higher quality and does not have extra processing compared to the deep_buffer output (didn't a/b, did no harm anyways)
 audio.deep_buffer.media=false
@@ -158,19 +158,37 @@ persist.bt.sbc_hd_enabled=1
 persist.bluetooth.sbc_hd_higher_bitrate=1
 # AAC frame control. Similar stuffs.
 persist.vendor.bt.aac_frm_ctl.enabled=true
-# A source warned me about this props breaking something but currently doing no harm?
+# No idea no harm done
 persist.vendor.bt.aac_vbr_frm_ctl.enabled=true
 persist.vendor.qcom.bluetooth.aac_frm_ctl.enabled=true
 persist.vendor.qcom.bluetooth.aac_vbr_ctl.enabled=true
-# Disables true wireless stereo plus state. Reduces interference in multi-device setups. (I didn't test this on my TWS yet. Might not so important eh?)
+# The standard TWSP allows passing audio to 2 channels at the same time instead of one earbud to another. It's on by default. Disable to avoid interferences. 
 persist.vendor.qcom.bluetooth.twsp_state.enabled=false
 
+# Enable A2DP (this part will do wonders to your bluetooth audio)
+audio.effect.a2dp.enable=1
+vendor.audio.effect.a2dp.enable=1
+Vendor specific. Required to fully enable A2DP.
+vendor.audio.feature.a2dp_offload.enable=false
+# Expand A2DP to all codec. AAC sounds especially good and even better than LDAC now.
+persist.bt.a2dp.aptx_disable=false
+persist.bt.a2dp.aptx_hd_disable=false
+persist.bt.a2dp.aac_disable=false
+# Required for AAC to sound like magic
+persist.vendor.bt.a2dp.aac_whitelist=false
+persist.vendor.bt.a2dp_offload_cap=sbc-aptx-aptxtws-aptxhd-aac-ldac
+# The same settings can be found in developer option \"Disable A2DP hardware offload\"
+# If you have the master switch audio offload enabled. Don't disable a2dp offload. It'll make the audio to be insanely muddy and unbearable. Or else having offload disabled all together makes the sound to be extremely clean.
+# Please only change codec when a song is paused if you disable A2DP offload. Or else it'll play the song through the phone speaker. You'll just need to replay they song so they come back to bluetooth.
+persist.bluetooth.a2dp_offload.disabled=true
+
+# These seem to only work in vendor build.prop
 # Remove silly volume warning
 audio.safemedia.bypass=true
 persist.speaker.prot.enable=false
 vendor.audio.feature.spkr_prot.enable=false
 # 100 volume steps
-ro.config.media_vol_steps=100
+ro.config.media_vol_steps=50
 
 # VR capability
 persist.audio.vr.enable=true
@@ -194,24 +212,24 @@ persist.audio.lowlatency.rec=true
 vendor.audio.feature.audiozoom.enable=true
 
 # Enables internal codec for HiFi in core audio.
+# Tied to vendor HAL. Defaults to false. Allows high-resolution audio playback. (More instrument seperation)
+vendor.audio.feature.hifi_audio.enable=true
 # May increase CPU load if not hardware-accelerated. It makes the sounds tasteless I don't like it.
 persist.audio.hifi.int_codec=false
 # I thought it's supposed to do the same thing but it makes the overall sound sweet and pleasant for some reasons.
 persist.vendor.audio.hifi.int_codec=true
-# Higher sample rates and reducing jitter (Unsure if it took effect but apparently no harm done)
+# Higher sample rates and reducing jitter (Crisp and clean highs)
 ro.hardware.hifi.support=true
-# Reduce latency, distortion for wired. Has no direct tie to official HiFi standards. (Neither did this)
+# Reduce latency, distortion for wired. Has no direct tie to official HiFi standards. (Crisp and clean highs)
 audio.feature.hifi_audio.enable=true
 # Supports high-res formats (I find this to add a tons more instrument seperation to the sound)
 ro.audio.hifi=true
 ro.vendor.audio.hifi=true
 persist.audio.hifi=true
 persist.vendor.audio.hifi=true
-# Tied to vendor HAL. Defaults to false. Allows high-resolution audio playback. (Additional instrument seperation)
-vendor.audio.feature.hifi_audio.enable=true
 
 
-# No test no trust or just better leave default
+# No test no trust, just better leave default
 
 
 # Said to increase volume without distortion.
@@ -252,6 +270,10 @@ vendor.audio.feature.hifi_audio.enable=true
 # Battery current level ignore
 #persist.vendor.audio.bcl.enabled=false
 
+#qcom.hw.aac.encoder=true
+#vendor.audio.hw.aac.encoder=true
+#persist.service.btui.use_aptx=1 
+#persist.bt.enableAptXHD=true 
 
 #ro.config.hw_dts=true
 #ro.config.hw_dolby=true
@@ -277,7 +299,6 @@ dalvik.vm.check-dex-sum=false
 dalvik.vm.verify-bytecode=false
 ro.config.low_ram=false
 ro.config.small_battery=true
-
 
 # stability fix when enabling RTSP
 media.stagefright.enable-record=false
@@ -403,4 +424,6 @@ echo "$PROPS_STRING" | while IFS= read -r line; do
 
 done
 
+
+reboot
 exit
