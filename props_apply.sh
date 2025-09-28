@@ -1,6 +1,18 @@
 PROPS_STRING="
-# Carefully tested props tweaks for audio and extras. It would fix cheap DACs sounding harsh. Or grainy vocal you usually find from your phone speakers.
+# Carefully tested props tweaks for clean, immersive, correctly positioned audio and extras.
+# It would fix cheap DACs sounding harsh. Or grainy vocal you usually find from your phone speakers.
+# Also bring bluetooth audio very closed to wired bit-perfect audio. Fixed issues with the AAC sounding worse than SBC. Also with much less latency now.
 # This mod gain me trust with the Harman target. Turn out the shoutiness was never from the target itself.
+# That said it doesn't come without one bug is that changing codec or connecting bluetooth while a track is playing causes the audio to leak to the phone speaker for some reason.
+# Inspired by Audio Misc Settings and Audio Resamplerate Magisk modules. This mod is easy to control and with using Android's factory's flags, it's pretty much compatible with any devices.
+# For details on how this mod works, it's recommend that you read my test reports carefully before making any changes. Be responsible.
+
+# The result is finalize with AB testing with a group of 4 audiophile friends of mine. Proven with tremendous impression and enjoyments! They do feel like in the luxury!
+# I've experiences with audio devices at 500$ grade, broke quite a lot of IEMs and speakers while modding and tinkering for credits haha. That amount of money cannot brings this kind of experience.
+# I've spent 20 total hours to exhaustive test these flags. However I couldn't test all of the combinations and cases. However, this's a very stable implementation of it.
+# Words are just words until you try this out for yourself!
+
+# Guide
 # Gain root access with \"su\" then paste the entire script in Termux after installing the MagiskHidePropsConf module
 # In case of wanting to fallback, use \"props -r\"
 
@@ -11,7 +23,7 @@ windowsmgr.max_events_per_sec=0
 view.scroll_friction=0
 # Measure rendering time in adb shell dumpsys gfxinfo
 #debug.egl.profiler=1
-debug.hwui.renderer.disable_vsync = true
+debug.hwui.renderer.disable_vsync=true
 debug.hwui.disable_vsync=true
 hwui.disable_vsync=true
 debug.cpurend.vsync=false
@@ -113,6 +125,7 @@ persist.vendor.audio.playback.mch.downsample=false
 
 # Offload means passing audio processing to DSP instead of CPU, potentially saving power though may not be noticeable. Require testing
 # In my case, disabling offloading gives me slightly purer sound and less of the vague and foggy sound.
+# If you intend to change offloading flags, be aware of A2DP offloading as well. Bluetooth might be broken and very muddy if you mess things up.
 # Offload true, sf hw 1=> EQ works on all apps, some weird old games would crash
 # Offload true, sf hw 0 => EQ only works with music player. Stable.
 # Offload false, sf hw 1 => EQ works on all apps, some weird old games would crash
@@ -179,7 +192,8 @@ persist.vendor.bt.a2dp.aac_whitelist=false
 persist.vendor.bt.a2dp_offload_cap=sbc-aptx-aptxtws-aptxhd-aac-ldac
 # The same settings can be found in developer option \"Disable A2DP hardware offload\"
 # If you have the master switch audio offload enabled. Don't disable a2dp offload. It'll make the audio to be insanely muddy and unbearable. Or else having offload disabled all together makes the sound to be extremely clean.
-# Please only change codec when a song is paused if you disable A2DP offload. Or else it'll play the song through the phone speaker. You'll just need to replay they song so they come back to bluetooth.
+# Changing codec or connecting bluetooth when a track is playing will cause audio to leak to the phone speakers. You'll just need to replay they song so they come back to bluetooth.
+# You can prevent that by pausing the song before reconnecting.
 persist.bluetooth.a2dp_offload.disabled=true
 
 # These seem to only work in vendor build.prop
@@ -272,8 +286,8 @@ persist.vendor.audio.hifi=true
 
 #qcom.hw.aac.encoder=true
 #vendor.audio.hw.aac.encoder=true
-#persist.service.btui.use_aptx=1 
-#persist.bt.enableAptXHD=true 
+#persist.service.btui.use_aptx=1
+#persist.bt.enableAptXHD=true
 
 #ro.config.hw_dts=true
 #ro.config.hw_dolby=true
@@ -342,9 +356,9 @@ log_videodecnode=0
 log_outputnode=0
 log_outputnodeinputport=0
 log.pm4mem=0
-log.cffdump_with_ifh=0                 
-log.cffdump_no_memzero=0       
-log.dumpx=0 
+log.cffdump_with_ifh=0
+log.cffdump_no_memzero=0
+log.dumpx=0
 log.primitives=0
 log.resolves=0
 log.pm4=0
