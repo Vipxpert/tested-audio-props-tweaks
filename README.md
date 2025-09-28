@@ -2,7 +2,7 @@ Carefully tested props tweaks for clean, immersive, correctly positioned audio a
 
 It would fix cheap DACs sounding harsh. Or grainy vocal you usually find from your phone speakers.
 
-Also bring bluetooth audio very closed to wired bit-perfect audio. Fixed issues with the AAC sounding worse than SBC. Also with much less latency now.
+Also bring bluetooth audio very closed to wired bit-perfect audio. Fixed issues with the AAC sounding worse than SBC. LDAC also will be spicy and lack bass no more. Also with less latency now!
 
 This mod gain me trust with the Harman target. Turn out the shoutiness was never from the target itself.
 
