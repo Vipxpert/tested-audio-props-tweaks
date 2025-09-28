@@ -1,7 +1,7 @@
 PROPS_STRING="
 # Carefully tested props tweaks for clean, immersive, correctly positioned audio and extras.
 # It would fix cheap DACs sounding harsh. Or grainy vocal you usually find from your phone speakers.
-# Also bring bluetooth audio very closed to wired bit-perfect audio. Fixed issues with the AAC sounding worse than SBC. Also with much less latency now.
+# Also bring bluetooth audio very closed to wired bit-perfect audio. Fixed issues with the AAC sounding worse than SBC. LDAC also will be spicy and lack bass no more. Also with less latency now!
 # This mod gain me trust with the Harman target. Turn out the shoutiness was never from the target itself.
 # That said it doesn't come without one bug is that changing codec or connecting bluetooth while a track is playing causes the audio to leak to the phone speaker for some reason.
 # Inspired by Audio Misc Settings and Audio Resamplerate Magisk modules. This mod is easy to control and with using Android's factory's flags, it's pretty much compatible with any devices.
