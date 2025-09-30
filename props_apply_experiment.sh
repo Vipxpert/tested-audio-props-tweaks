@@ -68,6 +68,7 @@ touch.size.bias=0
 touch.size.scale=1
 ro.input.resampling=0
 #ro.global.block_untrusted_touches=0
+# Not officially documented.
 persist.sys.sf.gamma=1
 
 # Do not change. Would cause overheat and battery drain.
@@ -176,14 +177,8 @@ persist.vendor.bt.aac_frm_ctl.enabled=true
 persist.vendor.bt.aac_vbr_frm_ctl.enabled=true
 persist.vendor.qcom.bluetooth.aac_frm_ctl.enabled=true
 persist.vendor.qcom.bluetooth.aac_vbr_ctl.enabled=true
-# Adaptive bit-rate, disable for highest quality connection always.
-persist.bluetooth.a2dp_aac_abr.enable=false
 # The standard TWSP allows passing audio to 2 channels at the same time instead of one earbud to another. It's on by default. Disable to avoid interferences.
 persist.vendor.qcom.bluetooth.twsp_state.enabled=false
-# Lock LDAC to highest bit-rate
-vendor.bluetooth.ldac.abr=false
-# Wide-band speech for voice and assistance
-vendor.media.audiohal.btwbs=true
 
 # Enable A2DP (this part will do wonders to your bluetooth audio)
 audio.effect.a2dp.enable=1
@@ -207,9 +202,10 @@ persist.bluetooth.a2dp_offload.disabled=true
 # Remove silly volume warning
 audio.safemedia.bypass=true
 persist.speaker.prot.enable=false
-persist.config.speaker_protect_enabled=0
+# Protect the phone speakers from damages.
+#persist.config.speaker_protect_enabled=0
 vendor.audio.feature.spkr_prot.enable=false
-# 100 volume steps
+# Volume steps
 ro.config.media_vol_steps=50
 # Enable hardware volume control volume. Said to avoid clipping and distortion. Unable to test.
 ro.vendor.audio.gain.support=true
@@ -226,12 +222,12 @@ vendor.audio.feature.keep_alive.enable=true
 vendor.audio.feature.thermal_listener.enable=false
 
 # Quality recording
-audio.record.delay=0
+#audio.record.delay=0
 # Device allows DSD hi-res audio playback at the same time as voice/VoIP calls.
 vendor.voice.dsd.playback.conc.disabled=false
 # HDR recording
 vendor.audio.hdr.record.enable=true
-vendor.audio.hdr.spf.record.enable=true
+#vendor.audio.hdr.spf.record.enable=true
 vendor.audio.3daudio.record.enable=true
 ro.vendor.audio.recording.hd=true
 ro.ril.enable.amr.wideband=1
@@ -240,9 +236,9 @@ vendor.audio.feature.audiozoom.enable=true
 # 360 audio recording
 persist.vendor.audio.ambisonic.capture=true
 persist.vendor.audio.ambisonic.auto.profile=true
-vendor.audio.chk.cal.us=1
 persist.vendor.audio.endcall.delay=0
-persist.vendor.audio.record.ull.support=true
+#persist.vendor.audio.record.ull.support=true
+#vendor.audio.chk.cal.us=1
 
 # Enables internal codec for HiFi in core audio.
 # Tied to vendor HAL. Defaults to false. Allows high-resolution audio playback. (More instrument seperation)
@@ -383,11 +379,22 @@ persist.android.strictmode=0"
 
 
 
-
-
 # Ignored
 PLACE_HOLDER="
+# Adaptive bit-rate, disable for highest quality connection always.
+persist.bluetooth.a2dp_aac_abr.enable=false
+# Wide-band speech for voice and assistance
+#vendor.media.audiohal.btwbs=true
+
 # Recently added, not fully tested
+
+# Disables or minimizes SBC (fallback codec) bitpool allocation, forcing the stack to prefer high-bitrate LDAC instead of dropping to SBC during negotiation. This indirectly locks LDAC at 990 kbps by reducing fallback incentives.
+persist.bluetooth.a2dp.sbc_bitpool=0
+# Enables split A2DP processing, which separates codec handling and can stabilize high-bitrate LDAC by optimizing packet transmission. Helps maintain 990 kbps even under moderate interference.
+persist.vendor.btstack.enable.splita2dp=true
+
+
+
 
 # Use more DSP power for voice recognition
 persist.vendor.audio.sva.conc.enabled=true
@@ -730,7 +737,9 @@ use.non-omx.dsd.encoder=false
 #persist.vendor.audio.bcl.enabled=false
 # Expose Surround Sound Recording
 #ro.vendor.audio.sdk.ssr=false
-#ro.qc.sdk.audio.ssr=false"
+#ro.qc.sdk.audio.ssr=false
+# Lock LDAC to highest bit-rate (doesn't work)
+vendor.bluetooth.ldac.abr=false"
 
 
 # Loop through each line of the string
