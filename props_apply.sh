@@ -203,7 +203,7 @@ persist.bluetooth.a2dp_offload.disabled=true
 # Remove silly volume warning
 audio.safemedia.bypass=true
 persist.speaker.prot.enable=false
-# Protect the phone speakers from damages.
+# Protect the phone speakers from damages. Settings to 0 is susected to distort bass.
 #persist.config.speaker_protect_enabled=0
 vendor.audio.feature.spkr_prot.enable=false
 # Volume steps
