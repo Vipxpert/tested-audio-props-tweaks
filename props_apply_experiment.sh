@@ -267,65 +267,6 @@ persist.vendor.audio.hifi=true
 
 
 
-
-
-
-
-# Recently added, not fully tested
-
-# Use more DSP power for voice recognition
-persist.vendor.audio.sva.conc.enabled=true
-persist.vendor.audio.okg_hotword_ext_dsp=true
-# Keeps the voice-activation engine active even when other audio sessions are running
-persist.vendor.audio.va_concurrency_enabled=true
-
-# For LE audio to treat TWS as one single devices
-ro.vendor.bluetooth.csip_qti=true
-
-# Enable TWS plus for TWS devices
-persist.vendor.btstack.enable.twsplussho=true
-persist.vendor.btstack.enable.twsplus=true
-
-# Master – the phone controls the timing of the connection and the piconet.
-# Slave – the phone follows the master’s clock/timing.
-persist.vendor.bluetooth.prefferedrole=master
-
-# Not part of the standard Android AOSP or Qualcomm documented flags
-persist.vendor.bluetooth.connection_improve=yes
-
-# A fix invented (not by me) to prevent weird high pitch when using A2DP with 44.1kHz
-persist.vendor.bt.splita2dp.44_1_war=true
-# The modern AIDL instead of HIDL for modern codecs. It's already default nowadays.
-#persist.vendor.qcom.bluetooth.aidl_hal=true
-
-# HAL or DSP update audio calibration/tuning values on the fly (gain tables, EQ filters, speaker protection data) without needing a full audio path restart
-#persist.vendor.audio.delta.refresh=true
-# Adds a fixed delay so that the Bluetooth stack has more “headroom” to avoid audio dropouts / stutter, underrun pops or clicks
-#persist.vendor.audio.sys.a2h_delay_for_a2dp=50
-
-#
-vendor.audio.av.streaming.offload.enable=false
-vendor.audio.offload.track.enable=false
-vendor.audio.offload.multiple.enabled=false
-# Disable recording and playback run at the same time.
-vendor.audio.rec.playback.conc.disabled=true
-
-vendor.audio.usb.super_hifi=true
-ro.config.hifi_config_state=1
-ro.config.hifi_enhance_support=1
-persist.audio.hifi_adv_support=1
-persist.audio.hifi_dac=ON
-persist.vendor.audio.hifi_enabled=true
-
-# Cross-Channel monitors R/L channels to adjust for avoiding issues like imbalance or distortion
-persist.vendor.audio.cca.enabled=false
-# Enable the compensation step inside the audio HAL / DSP. False for raw.
-ro.vendor.audio.ce.compensation.need=true
-# Gain offset
-#ro.vendor.audio.ce.compensation.value=5
-
-
-
 #ro.config.hw_dts=true
 #ro.config.hw_dolby=true
 #audio.dolby.ds2.enabled=true
@@ -446,6 +387,62 @@ persist.android.strictmode=0"
 
 # Ignored
 PLACE_HOLDER="
+# Recently added, not fully tested
+
+# Use more DSP power for voice recognition
+persist.vendor.audio.sva.conc.enabled=true
+persist.vendor.audio.okg_hotword_ext_dsp=true
+# Keeps the voice-activation engine active even when other audio sessions are running
+persist.vendor.audio.va_concurrency_enabled=true
+
+# For LE audio to treat TWS as one single devices
+ro.vendor.bluetooth.csip_qti=true
+
+# Enable TWS plus for TWS devices
+persist.vendor.btstack.enable.twsplussho=true
+persist.vendor.btstack.enable.twsplus=true
+
+# Master – the phone controls the timing of the connection and the piconet.
+# Slave – the phone follows the master’s clock/timing.
+persist.vendor.bluetooth.prefferedrole=master
+
+# Not part of the standard Android AOSP or Qualcomm documented flags
+persist.vendor.bluetooth.connection_improve=yes
+
+# A fix invented (not by me) to prevent weird high pitch when using A2DP with 44.1kHz
+persist.vendor.bt.splita2dp.44_1_war=true
+# The modern AIDL instead of HIDL for modern codecs. It's already default nowadays.
+#persist.vendor.qcom.bluetooth.aidl_hal=true
+
+# HAL or DSP update audio calibration/tuning values on the fly (gain tables, EQ filters, speaker protection data) without needing a full audio path restart
+#persist.vendor.audio.delta.refresh=true
+# Adds a fixed delay so that the Bluetooth stack has more “headroom” to avoid audio dropouts / stutter, underrun pops or clicks
+#persist.vendor.audio.sys.a2h_delay_for_a2dp=50
+
+#
+vendor.audio.av.streaming.offload.enable=false
+vendor.audio.offload.track.enable=false
+vendor.audio.offload.multiple.enabled=false
+# Disable recording and playback run at the same time.
+vendor.audio.rec.playback.conc.disabled=true
+
+vendor.audio.usb.super_hifi=true
+ro.config.hifi_config_state=1
+ro.config.hifi_enhance_support=1
+persist.audio.hifi_adv_support=1
+persist.audio.hifi_dac=ON
+persist.vendor.audio.hifi_enabled=true
+
+# Cross-Channel monitors R/L channels to adjust for avoiding issues like imbalance or distortion
+persist.vendor.audio.cca.enabled=false
+# Enable the compensation step inside the audio HAL / DSP. False for raw.
+ro.vendor.audio.ce.compensation.need=true
+# Gain offset
+#ro.vendor.audio.ce.compensation.value=5
+
+
+
+
 # AAC is processed in DSP
 #qcom.hw.aac.encoder=false
 #qcom.hw.aac.decoder=false
