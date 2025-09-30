@@ -1,3 +1,4 @@
+printf "y\nn\n" | props -r
 PROPS_STRING="
 # !!! This version is not fully tested !!!
 # Carefully tested props tweaks for clean, immersive, correctly positioned audio and extras.
