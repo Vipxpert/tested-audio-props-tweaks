@@ -1,6 +1,6 @@
 printf "y\nn\n" | props -r
 PROPS_STRING="
-# This version is fully stable and tested on Realme Q5 Pro and Motorola Edge 30 Ultra
+# !!! This version is not fully tested !!!
 # Carefully tested props tweaks for clean, immersive, correctly positioned audio and extras.
 # It would fix cheap DACs sounding harsh. Or grainy vocal you usually find from your phone speakers.
 # Also bring bluetooth audio very closed to wired bit-perfect audio. Fixed issues with the AAC sounding worse than SBC. LDAC also will be spicy and lack bass no more. Also with less latency now!
@@ -18,6 +18,10 @@ PROPS_STRING="
 # Guide
 # Gain root access with \"su\" then paste the entire script in Termux after installing the MagiskHidePropsConf module
 # In case of wanting to fallback, use \"props -r\"
+
+# There're parts that are up to your preference and marked with *preference*.
+# You can comment them out if you don't want them.
+
 
 vm.laptop_mode=1
 vm.swapiness=0
@@ -121,8 +125,29 @@ persist.vendor.audio.playback.mch.downsample=false
 
 # Don't add 16 or 24-bit configuration here. They override.
 vendor.audio.flac.sw.decoder.32bit=true
-flac.sw.decoder.32bit.support=true
 vendor.audio.aac.sw.decoder.32bit=true
+vendor.audio.mp3.sw.decoder.32bit=true
+vendor.audio.ac3.sw.decoder.32bit=true
+vendor.audio.eac3.sw.decoder.32bit=true
+vendor.audio.eac3_joc.sw.decoder.32bit=true
+vendor.audio.ac4.sw.decoder.32bit=true
+vendor.audio.opus.sw.decoder.32bit=true
+vendor.audio.qti.sw.decoder.32bit=true
+vendor.audio.dsp.sw.decoder.32bit=true
+vendor.audio.dsd.sw.decoder.32bit=true
+vendor.audio.flac.sw.encoder.32bit=true
+vendor.audio.aac.sw.encoder.32bit=true
+vendor.audio.mp3.sw.encoder.32bit=true
+vendor.audio.raw.sw.encoder.32bit=true
+vendor.audio.ac3.sw.encoder.32bit=true
+vendor.audio.eac3.sw.encoder.32bit=true
+vendor.audio.eac3_joc.sw.encoder.32bit=true
+vendor.audio.ac4.sw.encoder.32bit=true
+vendor.audio.opus.sw.encoder.32bit=true
+vendor.audio.qti.sw.encoder.32bit=true
+vendor.audio.dsp.sw.encoder.32bit=true
+vendor.audio.dsd.sw.encoder.32bit=true
+flac.sw.decoder.32bit.support=true
 persist.vendor.audio.format.32bit=true
 persist.vendor.audio_hal.dsp_bit_width_enforce_mode=32
 
@@ -172,13 +197,24 @@ media.stagefright.audio.deep=false
 # SBC HD. Useless but does no harm anyways.
 persist.bt.sbc_hd_enabled=1
 persist.bluetooth.sbc_hd_higher_bitrate=1
+# Increase thread priorities for bluetooth
+ro.vendor.af.raise_bt_thread_prio=true
 # AAC frame control. Similar stuffs.
 persist.vendor.bt.aac_frm_ctl.enabled=true
 # Variable frame control. No idea no harm done.
 persist.vendor.bt.aac_vbr_frm_ctl.enabled=true
 persist.vendor.qcom.bluetooth.aac_frm_ctl.enabled=true
 persist.vendor.qcom.bluetooth.aac_vbr_ctl.enabled=true
-# The standard TWSP allows passing audio to 2 channels at the same time instead of one earbud to another. It's on by default. Disable to avoid interferences.
+# Adaptive bit-rate, disable for highest quality connection always.
+persist.bluetooth.a2dp_aac_abr.enable=false
+# *preferrence*
+# The standard TWSP allows passing audio to 2 channels at the same time instead of one earbud to another. Consider 2 devices as one.
+# Enable TWSP (expand sound-stage but unnatural)
+persist.vendor.btstack.enable.twsplus=true
+# Single/secondary headset operation? Idk  (for some reason the mid and high are more transparent but hurt my ears a bit. More luxurious timbre.)
+# You either comment out both this and the one above or leave both of these on for good sound
+persist.vendor.btstack.enable.twsplussho=true
+# State management. Disable to avoid TWSP interferences. (Lose bass and sound-stage if set to true even when non-TWS devices)
 persist.vendor.qcom.bluetooth.twsp_state.enabled=false
 
 # Enable A2DP (this part will do wonders to your bluetooth audio)
@@ -198,6 +234,14 @@ persist.vendor.bt.a2dp_offload_cap=sbc-aptx-aptxtws-aptxhd-aac-ldac
 # Changing codec or connecting bluetooth when a track is playing will cause audio to leak to the phone speakers. You'll just need to replay they song so they come back to bluetooth.
 # You can prevent that by pausing the song before reconnecting.
 persist.bluetooth.a2dp_offload.disabled=true
+# Enables split A2DP processing, which separates codec handling
+# A tweak to prevent weird high pitch when using A2DP with 44.1kHz (unnatural)
+# Not properly tested
+#persist.vendor.bt.splita2dp.44_1_war=true
+# Probably placebo. I feel better having this little guy on.
+# Who is the little cute prop tweak? Who is it? Who is it? It's you!! TRUE!!
+# Not properly tested
+#persist.vendor.btstack.enable.splita2dp=true
 
 # These seem to only work in vendor build.prop
 # Remove silly volume warning
@@ -382,8 +426,14 @@ persist.android.strictmode=0"
 
 # Ignored
 PLACE_HOLDER="
-# Adaptive bit-rate, disable for highest quality connection always.
-persist.bluetooth.a2dp_aac_abr.enable=false
+
+vendor.audio.usb.super_hifi=true
+ro.config.hifi_config_state=1
+ro.config.hifi_enhance_support=1
+persist.audio.hifi_adv_support=1
+persist.audio.hifi_dac=ON
+persist.vendor.audio.hifi_enabled=true
+
 # Wide-band speech for voice and assistance
 #vendor.media.audiohal.btwbs=true
 
@@ -391,8 +441,6 @@ persist.bluetooth.a2dp_aac_abr.enable=false
 
 # Disables or minimizes SBC (fallback codec) bitpool allocation, forcing the stack to prefer high-bitrate LDAC instead of dropping to SBC during negotiation. This indirectly locks LDAC at 990 kbps by reducing fallback incentives.
 persist.bluetooth.a2dp.sbc_bitpool=0
-# Enables split A2DP processing, which separates codec handling and can stabilize high-bitrate LDAC by optimizing packet transmission. Helps maintain 990 kbps even under moderate interference.
-persist.vendor.btstack.enable.splita2dp=true
 
 
 
@@ -406,10 +454,6 @@ persist.vendor.audio.va_concurrency_enabled=true
 # For LE audio to treat TWS as one single devices
 ro.vendor.bluetooth.csip_qti=true
 
-# Enable TWS plus for TWS devices
-persist.vendor.btstack.enable.twsplussho=true
-persist.vendor.btstack.enable.twsplus=true
-
 # Master – the phone controls the timing of the connection and the piconet.
 # Slave – the phone follows the master’s clock/timing.
 persist.vendor.bluetooth.prefferedrole=master
@@ -417,8 +461,7 @@ persist.vendor.bluetooth.prefferedrole=master
 # Not part of the standard Android AOSP or Qualcomm documented flags
 persist.vendor.bluetooth.connection_improve=yes
 
-# A fix invented (not by me) to prevent weird high pitch when using A2DP with 44.1kHz
-persist.vendor.bt.splita2dp.44_1_war=true
+
 # The modern AIDL instead of HIDL for modern codecs. It's already default nowadays.
 #persist.vendor.qcom.bluetooth.aidl_hal=true
 
@@ -433,13 +476,6 @@ vendor.audio.offload.track.enable=false
 vendor.audio.offload.multiple.enabled=false
 # Disable recording and playback run at the same time.
 vendor.audio.rec.playback.conc.disabled=true
-
-vendor.audio.usb.super_hifi=true
-ro.config.hifi_config_state=1
-ro.config.hifi_enhance_support=1
-persist.audio.hifi_adv_support=1
-persist.audio.hifi_dac=ON
-persist.vendor.audio.hifi_enabled=true
 
 # Cross-Channel monitors R/L channels to adjust for avoiding issues like imbalance or distortion
 persist.vendor.audio.cca.enabled=false
@@ -475,7 +511,6 @@ qti_flac_decoder=false
 vorbis_offload_enabled=false
 wma_offload_enabled=false
 
-ro.vendor.af.raise_bt_thread_prio=true
 audio.decoder_override_check=true
 vendor.qc2audio.suspend.enabled=false
 vendor.qc2audio.per_frame.flac.dec.enabled=true
@@ -502,9 +537,6 @@ sys.vendor.atmos.passthrough=enable
 ro.vendor.audio.elus.enable=true
 ro.vendor.audio.3d.audio.support=true
 ro.vendor.audio.surround.support=true
-ro.vendor.audio.dolby.eq.half=true
-ro.vendor.audio.dolby.surround.enable=true
-ro.vendor.audio.dolby.fade_switch=true
 ro.vendor.media.video.meeting.support=true
 
 vendor.usb.analog_audioacc_disabled=false
@@ -572,29 +604,7 @@ persist.vendor.audio.misoundasc=true
 
 persist.vendor.audio.speaker.stereo=true
 
-#vendor.audio.aac.sw.decoder.32bit=true
-#vendor.audio.flac.sw.decoder.32bit=true
-vendor.audio.mp3.sw.decoder.32bit=true
-vendor.audio.ac3.sw.decoder.32bit=true
-vendor.audio.eac3.sw.decoder.32bit=true
-vendor.audio.eac3_joc.sw.decoder.32bit=true
-vendor.audio.ac4.sw.decoder.32bit=true
-vendor.audio.opus.sw.decoder.32bit=true
-vendor.audio.qti.sw.decoder.32bit=true
-vendor.audio.dsp.sw.decoder.32bit=true
-vendor.audio.dsd.sw.decoder.32bit=true
-vendor.audio.flac.sw.encoder.32bit=true
-vendor.audio.aac.sw.encoder.32bit=true
-vendor.audio.mp3.sw.encoder.32bit=true
-vendor.audio.raw.sw.encoder.32bit=true
-vendor.audio.ac3.sw.encoder.32bit=true
-vendor.audio.eac3.sw.encoder.32bit=true
-vendor.audio.eac3_joc.sw.encoder.32bit=true
-vendor.audio.ac4.sw.encoder.32bit=true
-vendor.audio.opus.sw.encoder.32bit=true
-vendor.audio.qti.sw.encoder.32bit=true
-vendor.audio.dsp.sw.encoder.32bit=true
-vendor.audio.dsd.sw.encoder.32bit=true
+
 vendor.audio.flac.complexity.default=10
 vendor.audio.flac.quality=100
 vendor.audio.aac.complexity.default=10
@@ -792,27 +802,3 @@ resetprop -p --delete audio.resolution.limit.32bit
 
 reboot
 exit
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
