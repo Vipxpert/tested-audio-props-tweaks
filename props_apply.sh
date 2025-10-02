@@ -51,7 +51,7 @@ touch.size.scale=1
 ro.input.resampling=0
 #ro.global.block_untrusted_touches=0
 # Not officially documented.
-persist.sys.sf.gamma=1
+persist.sys.sf.gamma=0.5
 
 # Do not change. Would cause overheat and battery drain.
 debug.egl.hw=1
@@ -75,6 +75,10 @@ vendor.audio.feature.compress_meta_data.enable=false
 vendor.audio.feature.compress_in.enable=false
 vendor.audio.feature.compr_cap.enable=false
 vendor.audio.feature.compr_voip.enable=false
+# Enable the compensation step inside the audio HAL / DSP. False for raw.
+#ro.vendor.audio.ce.compensation.need=false
+# Gain offset
+#ro.vendor.audio.ce.compensation.value=5
 
 # 0 - 2 (default) - 4 - 7. Default is 2. This one is truely wholesome.
 af.resampler.quality=7
@@ -180,25 +184,24 @@ ro.vendor.af.raise_bt_thread_prio=true
 persist.vendor.bt.aac_frm_ctl.enabled=true
 # Variable frame control. No idea no harm done.
 persist.vendor.bt.aac_vbr_frm_ctl.enabled=true
-persist.vendor.qcom.bluetooth.aac_frm_ctl.enabled=true
-persist.vendor.qcom.bluetooth.aac_vbr_ctl.enabled=true
-# Adaptive bit-rate, disable for highest quality connection always.
-persist.bluetooth.a2dp_aac_abr.enable=false
+# Unsure, will test later
+#persist.vendor.qcom.bluetooth.aac_frm_ctl.enabled=true
+#persist.vendor.qcom.bluetooth.aac_vbr_ctl.enabled=true
+# Adaptive bit-rate, disable for highest quality connection always. (badly increase upper mid peaks a lot)
+#persist.bluetooth.a2dp_aac_abr.enable=false
 # The standard TWSP allows passing audio to 2 channels at the same time instead of one earbud to another. Consider 2 devices as one.
-# Enable TWSP (expand sound-stage but unnatural)
-# *preferrence*
-persist.vendor.btstack.enable.twsplus=true
-# Single/secondary headset operation? Idk  (for some reason the mid and high are more transparent but hurt my ears a bit. More luxurious timbre.)
+# Enable TWSP (expand the sound-stage but unnatural)
+#persist.vendor.btstack.enable.twsplus=true
+# Single/secondary headset operation? Idk  (the mid and high are much more clean but hurt my ears.)
 # You either comment out both this and the one above or leave both of these on for good sound
-# *preferrence*
-persist.vendor.btstack.enable.twsplussho=true
+#persist.vendor.btstack.enable.twsplussho=true
 # State management. Disable to avoid TWSP interferences. (Lose bass and sound-stage if set to true even when non-TWS devices)
 persist.vendor.qcom.bluetooth.twsp_state.enabled=false
 
 # Enable A2DP (this part will do wonders to your bluetooth audio)
 audio.effect.a2dp.enable=1
 vendor.audio.effect.a2dp.enable=1
-Vendor specific. Required to fully enable A2DP.
+# Vendor specific. Required to fully enable A2DP.
 vendor.audio.feature.a2dp_offload.enable=false
 # Expand A2DP to all codec. AAC sounds especially good and even better than LDAC now.
 persist.bt.a2dp.aptx_disable=false
@@ -230,9 +233,9 @@ persist.speaker.prot.enable=false
 vendor.audio.feature.spkr_prot.enable=false
 # Volume steps
 # *preferrence*
-ro.config.media_vol_steps=50
-# Enable hardware volume control volume. Said to avoid clipping and distortion. Unable to test.
-ro.vendor.audio.gain.support=true
+ro.config.media_vol_steps=100
+# Enable hardware volume control. Said to avoid clipping and distortion. Unable to test.
+#ro.vendor.audio.gain.support=true
 
 # VR capability
 persist.audio.vr.enable=true
@@ -287,14 +290,6 @@ persist.vendor.audio.hifi=true
 
 
 
-#ro.config.hw_dts=true
-#ro.config.hw_dolby=true
-#audio.dolby.ds2.enabled=true
-
-# Microsoft smooth streaming. Deprecated.
-#mm.enable.smoothstreaming=true
-#vendor.mm.en.sec.smoothstreaming=true
-
 persist.camera.HAL3.enabled=1
 camera.HAL3.enabled=1
 persist.camera.is_mode=4
@@ -321,7 +316,7 @@ ro.ril.hsupa.category=6
 ro.ril.hsxpa=5
 
 ro.display.brightness.brightness.mode=1
-persist.sys.sf.native_mode=0
+persist.sys.sf.native_mode=1
 #persist.vendor.dc_backlight.enable=true
 
 ro.config.hw_power_saving=1
@@ -458,10 +453,6 @@ vendor.audio.rec.playback.conc.disabled=true
 
 # Cross-Channel monitors R/L channels to adjust for avoiding issues like imbalance or distortion
 persist.vendor.audio.cca.enabled=false
-# Enable the compensation step inside the audio HAL / DSP. False for raw.
-ro.vendor.audio.ce.compensation.need=true
-# Gain offset
-#ro.vendor.audio.ce.compensation.value=5
 
 
 
@@ -729,7 +720,15 @@ use.non-omx.dsd.encoder=false
 #ro.vendor.audio.sdk.ssr=false
 #ro.qc.sdk.audio.ssr=false
 # Lock LDAC to highest bit-rate (doesn't work)
-vendor.bluetooth.ldac.abr=false"
+vendor.bluetooth.ldac.abr=false
+
+#ro.config.hw_dts=true
+#ro.config.hw_dolby=true
+#audio.dolby.ds2.enabled=true
+
+# Microsoft smooth streaming. Deprecated.
+#mm.enable.smoothstreaming=true
+#vendor.mm.en.sec.smoothstreaming=true"
 
 
 # Loop through each line of the string
