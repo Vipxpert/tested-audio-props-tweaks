@@ -50,8 +50,6 @@ touch.size.bias=0
 touch.size.scale=1
 ro.input.resampling=0
 #ro.global.block_untrusted_touches=0
-# Not officially documented.
-persist.sys.sf.gamma=0.5
 
 # Do not change. Would cause overheat and battery drain.
 debug.egl.hw=1
@@ -80,6 +78,9 @@ vendor.audio.feature.compr_voip.enable=false
 # Gain offset
 #ro.vendor.audio.ce.compensation.value=5
 
+#vendor.audio.compress_capture.enabled=false
+#vendor.audio.compress_capture.aac=false
+
 # 0 - 2 (default) - 4 - 7. Default is 2. This one is truely wholesome.
 af.resampler.quality=7
 persist.af.resampler.quality=7
@@ -105,9 +106,11 @@ vendor.audio.playback.mch.downsample=false
 persist.vendor.audio.playback.mch.downsample=false
 
 # Don't add 16 or 24-bit configuration here. They override.
+# No need of the encoding props here. They simply produce muddy and dark sound in my testings. I don't exactly understand the mechanism behind.
 vendor.audio.flac.sw.decoder.32bit=true
 vendor.audio.aac.sw.decoder.32bit=true
 vendor.audio.mp3.sw.decoder.32bit=true
+vendor.audio.raw.sw.decoder.32bit=true
 vendor.audio.ac3.sw.decoder.32bit=true
 vendor.audio.eac3.sw.decoder.32bit=true
 vendor.audio.eac3_joc.sw.decoder.32bit=true
@@ -116,19 +119,35 @@ vendor.audio.opus.sw.decoder.32bit=true
 vendor.audio.qti.sw.decoder.32bit=true
 vendor.audio.dsp.sw.decoder.32bit=true
 vendor.audio.dsd.sw.decoder.32bit=true
-vendor.audio.flac.sw.encoder.32bit=true
-vendor.audio.aac.sw.encoder.32bit=true
-vendor.audio.mp3.sw.encoder.32bit=true
-vendor.audio.raw.sw.encoder.32bit=true
-vendor.audio.ac3.sw.encoder.32bit=true
-vendor.audio.eac3.sw.encoder.32bit=true
-vendor.audio.eac3_joc.sw.encoder.32bit=true
-vendor.audio.ac4.sw.encoder.32bit=true
-vendor.audio.opus.sw.encoder.32bit=true
-vendor.audio.qti.sw.encoder.32bit=true
-vendor.audio.dsp.sw.encoder.32bit=true
-vendor.audio.dsd.sw.encoder.32bit=true
+
 flac.sw.decoder.32bit.support=true
+aac.sw.decoder.32bit.support=true
+mp3.sw.decoder.32bit.support=true
+raw.sw.decoder.32bit.support=true
+ac3.sw.decoder.32bit.support=true
+eac3.sw.decoder.32bit.support=true
+eac3_joc.sw.decoder.32bit.support=true
+ac4.sw.decoder.32bit.support=true
+opus.sw.decoder.32bit.support=true
+qti.sw.decoder.32bit.support=true
+dsp.sw.decoder.32bit.support=true
+dsd.sw.decoder.32bit.support=true
+
+# Indeed sound more high quality. Like it has more resolution to the air and treble.
+vendor.audio.flac.quality=100
+vendor.audio.aac.quality=100
+vendor.audio.mp3.quality=100
+vendor.audio.raw.quality=100
+vendor.audio.ac3.quality=100
+vendor.audio.eac3.quality=100
+vendor.audio.eac3_joc.quality=100
+vendor.audio.ac4.quality=100
+vendor.audio.opus.quality=100
+vendor.audio.qti.quality=100
+vendor.audio.dsp.quality=100
+vendor.audio.dsd.quality=100
+
+
 persist.vendor.audio.format.32bit=true
 persist.vendor.audio_hal.dsp_bit_width_enforce_mode=32
 
@@ -209,6 +228,10 @@ persist.bt.a2dp.aptx_hd_disable=false
 persist.bt.a2dp.aac_disable=false
 # Required for AAC to sound like magic
 persist.vendor.bt.a2dp.aac_whitelist=false
+# What's mac? (possibly sound very bad)
+#persist.vendor.bt.a2dp.mac_whitelist=false
+# Putting codecs that are not supported in here somehow cause a2dp to not work
+#persist.vendor.btstack.a2dp_offload_cap=sbc-aptx-aptxtws-aptxhd-aptxadaptiver2-aac-ldac-lhdc
 persist.vendor.bt.a2dp_offload_cap=sbc-aptx-aptxtws-aptxhd-aac-ldac
 # The same settings can be found in developer option \"Disable A2DP hardware offload\"
 # If you have the master switch audio offload enabled. Don't disable a2dp offload. It'll make the audio to be insanely muddy and unbearable. Or else having offload disabled all together makes the sound to be extremely clean.
@@ -224,12 +247,14 @@ persist.bluetooth.a2dp_offload.disabled=true
 # Not properly tested
 #persist.vendor.btstack.enable.splita2dp=true
 
+
 # These seem to only work in vendor build.prop
 # Remove silly volume warning
 audio.safemedia.bypass=true
 persist.speaker.prot.enable=false
 # Protect the phone speakers from damages. Settings to 0 is susected to distort bass.
 #persist.config.speaker_protect_enabled=0
+#
 vendor.audio.feature.spkr_prot.enable=false
 # Volume steps
 # *preferrence*
@@ -274,16 +299,21 @@ vendor.audio.feature.hifi_audio.enable=true
 persist.audio.hifi.int_codec=false
 # I thought it's supposed to do the same thing but it makes the overall sound sweet and pleasant for some reasons.
 persist.vendor.audio.hifi.int_codec=true
-# Higher sample rates and reducing jitter (Crisp and clean highs)
+# Higher sample rates and reducing jitter (Crisp and cleaner)
 ro.hardware.hifi.support=true
-# Reduce latency, distortion for wired. Has no direct tie to official HiFi standards. (Crisp and clean highs)
+# Reduce latency, distortion for wired. Has no direct tie to official HiFi standards. (Crisp and cleaner)
 audio.feature.hifi_audio.enable=true
-# Supports high-res formats (I find this to add a tons more instrument seperation to the sound)
+# Supports high-res formats (I find these to add a tons more instrument seperation to the sound)
 ro.audio.hifi=true
 ro.vendor.audio.hifi=true
 persist.audio.hifi=true
 persist.vendor.audio.hifi=true
-
+# Sound darn analytic. Treble is now clean.
+ro.config.hifi_enhance_support=1
+# test
+#persist.vendor.audio.hifi_enabled=true
+#ro.config.hifi_config_state=1
+#persist.audio.hifi_adv_support=1
 
 
 
@@ -398,15 +428,17 @@ persist.android.strictmode=0"
 
 
 
+
+
+
+
 # Ignored
 PLACE_HOLDER="
 
 vendor.audio.usb.super_hifi=true
-ro.config.hifi_config_state=1
-ro.config.hifi_enhance_support=1
-persist.audio.hifi_adv_support=1
 persist.audio.hifi_dac=ON
-persist.vendor.audio.hifi_enabled=true
+
+
 
 # Wide-band speech for voice and assistance
 #vendor.media.audiohal.btwbs=true
@@ -415,9 +447,6 @@ persist.vendor.audio.hifi_enabled=true
 
 # Disables or minimizes SBC (fallback codec) bitpool allocation, forcing the stack to prefer high-bitrate LDAC instead of dropping to SBC during negotiation. This indirectly locks LDAC at 990 kbps by reducing fallback incentives.
 persist.bluetooth.a2dp.sbc_bitpool=0
-
-
-
 
 # Use more DSP power for voice recognition
 persist.vendor.audio.sva.conc.enabled=true
@@ -521,13 +550,12 @@ vendor.audio.LL.coeff=100
 vendor.audio.caretaker.at=true
 vendor.audio.matrix.limiter.enable=0
 vendor.audio.capture.enforce_legacy_copp_sr=true
-vendor.audio.hal.output.suspend.supported=false
 vendor.audio.snd_card.open.retries=50
 vendor.audio.volume.headset.gain.depcal=true
 vendor.audio.camera.unsupport_low_latency=false
 vendor.audio.lowpower=false
-vendor.audio.compress_capture.enabled=false
-vendor.audio.compress_capture.aac=false
+
+
 vendor.audio.rt.mode=23
 vendor.audio.rt.mode.onlyfast=false
 vendor.audio.cpu.sched=31
@@ -575,90 +603,7 @@ persist.vendor.audio.misoundasc=true
 persist.vendor.audio.speaker.stereo=true
 
 
-vendor.audio.flac.complexity.default=10
-vendor.audio.flac.quality=100
-vendor.audio.aac.complexity.default=10
-vendor.audio.aac.quality=100
-vendor.audio.mp3.complexity.default=10
-vendor.audio.mp3.quality=100
-vendor.audio.qti.complexity.default=10
-vendor.audio.qti.quality=100
-vendor.audio.ac3.complexity.default=10
-vendor.audio.ac3.quality=100
-vendor.audio.eac3.complexity.default=10
-vendor.audio.eac3.quality=100
-vendor.audio.eac3_joc.complexity.default=10
-vendor.audio.eac3_joc.quality=100
-vendor.audio.ac4.complexity.default=10
-vendor.audio.ac4.quality=100
-vendor.audio.opus.complexity.default=10
-vendor.audio.opus.quality=100
-vendor.audio.dsp.complexity.default=10
-vendor.audio.dsp.quality=100
-vendor.audio.dsd.complexity.default=10
-vendor.audio.dsd.quality=100
-use.non-omx.flac.decoder=false
-use.non-omx.aac.decoder=false
-use.non-omx.mp3.decoder=false
-use.non-omx.raw.decoder=false
-use.non-omx.qti.decoder=false
-use.non-omx.ac3.decoder=false
-use.non-omx.ac4.decoder=false
-use.non-omx.opus.decoder=false
-use.non-omx.dsp.decoder=false
-use.non-omx.dsd.decoder=false
-use.non-omx.flac.encoder=false
-use.non-omx.aac.encoder=false
-use.non-omx.mp3.encoder=false
-use.non-omx.raw.encoder=false
-use.non-omx.qti.encoder=false
-use.non-omx.ac3.encoder=false
-use.non-omx.ac4.encoder=false
-use.non-omx.opus.encoder=false
-use.non-omx.dsp.encoder=false
-use.non-omx.dsd.encoder=falsevendor.audio.mp3.sw.decoder.32bit=true
-vendor.audio.ac3.sw.decoder.32bit=true
-vendor.audio.eac3.sw.decoder.32bit=true
-vendor.audio.eac3_joc.sw.decoder.32bit=true
-vendor.audio.ac4.sw.decoder.32bit=true
-vendor.audio.opus.sw.decoder.32bit=true
-vendor.audio.qti.sw.decoder.32bit=true
-vendor.audio.dsp.sw.decoder.32bit=true
-vendor.audio.dsd.sw.decoder.32bit=true
-vendor.audio.flac.sw.encoder.32bit=true
-vendor.audio.aac.sw.encoder.32bit=true
-vendor.audio.mp3.sw.encoder.32bit=true
-vendor.audio.raw.sw.encoder.32bit=true
-vendor.audio.ac3.sw.encoder.32bit=true
-vendor.audio.eac3.sw.encoder.32bit=true
-vendor.audio.eac3_joc.sw.encoder.32bit=true
-vendor.audio.ac4.sw.encoder.32bit=true
-vendor.audio.opus.sw.encoder.32bit=true
-vendor.audio.qti.sw.encoder.32bit=true
-vendor.audio.dsp.sw.encoder.32bit=true
-vendor.audio.dsd.sw.encoder.32bit=true
-vendor.audio.flac.complexity.default=10
-vendor.audio.flac.quality=100
-vendor.audio.aac.complexity.default=10
-vendor.audio.aac.quality=100
-vendor.audio.mp3.complexity.default=10
-vendor.audio.mp3.quality=100
-vendor.audio.qti.complexity.default=10
-vendor.audio.qti.quality=100
-vendor.audio.ac3.complexity.default=10
-vendor.audio.ac3.quality=100
-vendor.audio.eac3.complexity.default=10
-vendor.audio.eac3.quality=100
-vendor.audio.eac3_joc.complexity.default=10
-vendor.audio.eac3_joc.quality=100
-vendor.audio.ac4.complexity.default=10
-vendor.audio.ac4.quality=100
-vendor.audio.opus.complexity.default=10
-vendor.audio.opus.quality=100
-vendor.audio.dsp.complexity.default=10
-vendor.audio.dsp.quality=100
-vendor.audio.dsd.complexity.default=10
-vendor.audio.dsd.quality=100
+#
 use.non-omx.flac.decoder=false
 use.non-omx.aac.decoder=false
 use.non-omx.mp3.decoder=false
@@ -679,6 +624,55 @@ use.non-omx.ac4.encoder=false
 use.non-omx.opus.encoder=false
 use.non-omx.dsp.encoder=false
 use.non-omx.dsd.encoder=false
+
+flac.sw.encoder.32bit.support=true
+aac.sw.encoder.32bit.support=true
+mp3.sw.encoder.32bit.support=true
+raw.sw.encoder.32bit.support=true
+ac3.sw.encoder.32bit.support=true
+eac3.sw.encoder.32bit.support=true
+eac3_joc.sw.encoder.32bit.support=true
+ac4.sw.encoder.32bit.support=true
+opus.sw.encoder.32bit.support=true
+qti.sw.encoder.32bit.support=true
+dsp.sw.encoder.32bit.support=true
+dsd.sw.encoder.32bit.support=true
+
+vendor.audio.flac.sw.encoder.32bit=true
+vendor.audio.aac.sw.encoder.32bit=true
+vendor.audio.mp3.sw.encoder.32bit=true
+vendor.audio.raw.sw.encoder.32bit=true
+vendor.audio.ac3.sw.encoder.32bit=true
+vendor.audio.eac3.sw.encoder.32bit=true
+vendor.audio.eac3_joc.sw.encoder.32bit=true
+vendor.audio.ac4.sw.encoder.32bit=true
+vendor.audio.opus.sw.encoder.32bit=true
+vendor.audio.qti.sw.encoder.32bit=true
+vendor.audio.dsp.sw.encoder.32bit=true
+vendor.audio.dsd.sw.encoder.32bit=true
+
+vendor.audio.flac.complexity.default=10
+vendor.audio.aac.complexity.default=10
+vendor.audio.mp3.complexity.default=10
+vendor.audio.qti.complexity.default=10
+vendor.audio.ac3.complexity.default=10
+vendor.audio.eac3.complexity.default=10
+vendor.audio.eac3_joc.complexity.default=10
+vendor.audio.ac4.complexity.default=10
+vendor.audio.opus.complexity.default=10
+vendor.audio.dsp.complexity.default=10
+vendor.audio.dsd.complexity.default=10
+vendor.audio.flac.complexity.default=10
+vendor.audio.aac.complexity.default=10
+vendor.audio.mp3.complexity.default=10
+vendor.audio.qti.complexity.default=10
+vendor.audio.ac3.complexity.default=10
+vendor.audio.eac3.complexity.default=10
+vendor.audio.eac3_joc.complexity.default=10
+vendor.audio.ac4.complexity.default=10
+vendor.audio.opus.complexity.default=10
+vendor.audio.dsp.complexity.default=10
+vendor.audio.dsd.complexity.default=10
 
 # No test no trust, just better leave default
 
@@ -721,6 +715,8 @@ use.non-omx.dsd.encoder=false
 #ro.qc.sdk.audio.ssr=false
 # Lock LDAC to highest bit-rate (doesn't work)
 vendor.bluetooth.ldac.abr=false
+# In the dev settings
+#persist.vendor.btsatck.absvolfeature=false
 
 #ro.config.hw_dts=true
 #ro.config.hw_dolby=true
