@@ -60,10 +60,30 @@ dev.pm.dyn_samplingrate=1
 # Default is 2.
 # 0 minimizes buffering duration, results in reduced phase shifting, removes the wobbly stereo positioning effect to make the sound positions where they should be. Overall make the audio experience much more luxurious and spacious. At risk of CPU overrun on low-end devices however.
 vendor.audio.adm.buffering.ms=0
+
+# Custom stereo effect by vendor (?)
+#vendor.audio.feature.custom_stereo.enable=true
+# Dull
+#vendor.audio.cpu.sched.cpus=8
+# These 2 work on each other synergetically
+# Less grainy, smooth but unnatural, slightly warmer
+vendor.audio.rt.mode.onlyfast=false
+# Completely smooth. Better instrument separation. Without sacrificing sweetness.
+vendor.audio.cpu.sched.onlyfast=false
+# Enhance low ultra sound (human inaudible frequencies theoretically)
+# Sound huge but soundstage doesn't expand. Slightly warmer.
+# All instruments became more obvious and appear altogether.
+# It's a weird experience. You may want to comment this out for a more original sound.
+ro.vendor.audio.elus.enable=true
+# Fuller stereo (Stereo sound much more obvious for some reasons)
+vendor.audio.feature.receiver_aided_stereo.enable=true
+
 # Passing raw format directly to audio outputs. Default value is empty. Other values are compressed formats like aac.
 audio.usb.default.format=pcm
 persist.audio.flinger.bypass=true
 vendor.audio.usb.pcm.direct=true
+# Sound brighter. Not a great idea. Settings to 0 make it sounds more raw.
+effect.reverb.pcm=0
 # Disable dynamic range compression. The trade-off is that phone speakers cannot handle such dynamic range, resulting in limiter kicking in.
 audio.drc.enabled=0
 # Disable limiter kicking in caused by DRC disabling
@@ -73,13 +93,79 @@ vendor.audio.feature.compress_meta_data.enable=false
 vendor.audio.feature.compress_in.enable=false
 vendor.audio.feature.compr_cap.enable=false
 vendor.audio.feature.compr_voip.enable=false
-# Enable the compensation step inside the audio HAL / DSP. False for raw.
+# More treble extension but more dull
+vendor.audio.feature.compressed_audio.enable=false
+# Enable the compensation step inside the audio HAL / DSP. False for raw. (Having it false sound dull)
 #ro.vendor.audio.ce.compensation.need=false
 # Gain offset
 #ro.vendor.audio.ce.compensation.value=5
+# May have done nothing to the sound
+#vendor.audio.volume.headset.gain.depcal=true
 
 #vendor.audio.compress_capture.enabled=false
 #vendor.audio.compress_capture.aac=false
+
+# These seem to only work in vendor build.prop
+# Remove silly volume warning
+audio.safemedia.bypass=true
+persist.speaker.prot.enable=false
+# Protect the phone speakers from damages. Having it 0 makes the treble spiky.
+#persist.config.speaker_protect_enabled=0
+#
+vendor.audio.feature.spkr_prot.enable=false
+# Volume steps
+# *preference*
+ro.config.media_vol_steps=100
+# Enable hardware volume control. Said to avoid clipping and distortion. (Ice-picking treble)
+#ro.vendor.audio.gain.support=true
+
+# Seem dry and dull
+#vendor.audio.lowpower=false
+# Also more dry and dull but less
+#vendor.audio.feature.power_mode.enable=true
+# A bit more sibilant
+#vendor.audio.powerop=true
+
+# It's fine
+ro.vendor.platform.disable.audiorawout=false
+# Idk what this does but it sounds great, maybe placebo
+vendor.audio.feature.ext_hw_plugin=true
+# HW noise suppression (thinner mid but doesn't ruin the sweetness)
+#vendor.audio.feature.dynamic_ecns.enable=true
+# Sound-stage is smaller but oddly pleasant. The sound-stage is narrowed down to where exactly the IEM's drivers is.
+#vendor.audio.feature.external_dsp.enable=true
+# Still sweet but there's something else I don't like about it
+#vendor.audio.feature.external_qdsp.enable=true
+# Still sweet but is it more harsh or it's already it like that before? Not worth anyways
+#vendor.audio.feature.source_track_enabled=true
+# No idea
+#vendor.audio.feature.devicestate_listener.enable=true
+# No idea
+#vendor.audio.feature.dsm_feedback.enable=true
+# Crystal clear
+vendor.audio.feature.dmabuf.cma.memory.enable=true
+# It's fine
+vendor.audio.read.wsatz.type=true
+# No idea
+vendor.usb.analog_audioacc_disabled=false
+# Another crystal clear thing
+vendor.audio.sys.init=true
+# No idea
+#vendor.audio.trace.enable=true
+# Mid emphasized too much
+#vendor.audio.powerhal.power.ul=true
+#vendor.audio.powerhal.power.dl=true
+# Not really change the sound
+vendor.audio.feature.battery_listener.enable=false
+# It tones down the treble. Not entirely tasteless but it gets there.
+#vendor.audio.LL.coeff=100
+# Unsure
+#vendor.audio.caretaker.at=true
+# It seems to have unextended my treble lol. Cure the peak in the highs in my IEM though.
+#vendor.audio.capture.enforce_legacy_copp_sr=true
+# Seem not affect anything
+vendor.audio.snd_card.open.retries=50
+
 
 # 0 - 2 (default) - 4 - 7. Default is 2. This one is truely wholesome.
 af.resampler.quality=7
@@ -95,6 +181,11 @@ tunnel.audiovideo.decode=false
 tunnel.decode=false
 vendor.audio.tunnel.encode=false
 lpa.deepbuffer.enable=0
+# It's kinda doing nothing? Output remain very clean but it's tasteless
+#ro.audio.soundtrigger.lowpower=false
+vendor.audio.feature.thermal_listener.enable=false
+# Battery current level ignore
+persist.vendor.audio.bcl.enabled=false
 
 # May not be supported at all. Intuitively, resampling at such resolution should cause less artifacts. Felt like better but could be placebo. I didn't a/b enough but no harm done.
 ro.audio.samplerate=768000
@@ -120,36 +211,18 @@ vendor.audio.qti.sw.decoder.32bit=true
 vendor.audio.dsp.sw.decoder.32bit=true
 vendor.audio.dsd.sw.decoder.32bit=true
 
-flac.sw.decoder.32bit.support=true
-aac.sw.decoder.32bit.support=true
-mp3.sw.decoder.32bit.support=true
-raw.sw.decoder.32bit.support=true
-ac3.sw.decoder.32bit.support=true
-eac3.sw.decoder.32bit.support=true
-eac3_joc.sw.decoder.32bit.support=true
-ac4.sw.decoder.32bit.support=true
-opus.sw.decoder.32bit.support=true
-qti.sw.decoder.32bit.support=true
-dsp.sw.decoder.32bit.support=true
-dsd.sw.decoder.32bit.support=true
-
-# Indeed sound more high quality. Like it has more resolution to the air and treble.
-vendor.audio.flac.quality=100
-vendor.audio.aac.quality=100
-vendor.audio.mp3.quality=100
-vendor.audio.raw.quality=100
-vendor.audio.ac3.quality=100
-vendor.audio.eac3.quality=100
-vendor.audio.eac3_joc.quality=100
-vendor.audio.ac4.quality=100
-vendor.audio.opus.quality=100
-vendor.audio.qti.quality=100
-vendor.audio.dsp.quality=100
-vendor.audio.dsd.quality=100
-
 
 persist.vendor.audio.format.32bit=true
 persist.vendor.audio_hal.dsp_bit_width_enforce_mode=32
+# Seem doing nothing
+#ro.mediaserver.64b.enable=true
+
+# If true sound like 128 kbps who even
+#audio.decoder_override_check=false
+
+# sound dull on both, better set to false
+#vendor.audio.use.sw.alac.decoder=false
+#vendor.audio.use.sw.ape.decoder=false
 
 # Offload means passing audio processing to DSP instead of CPU, potentially saving power though may not be noticeable. Require testing
 # In my case, disabling offloading gives me slightly purer sound and less of the vague and foggy sound.
@@ -160,7 +233,8 @@ persist.vendor.audio_hal.dsp_bit_width_enforce_mode=32
 # Offload false, sf hw 0 => EQ works on all apps, no apps crash, clean sound
 debug.sf.hw=0
 audio.offload.enable=false
-vendor.audio.offload.enable=false
+# Layering this addition offload props cause the treble to sound very broken idk why
+#vendor.audio.offload.enable=false
 # Redundant safeguard
 audio.offload.disable=true
 # Low power audio, theoretically is offload. Set it true and it sounds tasteless. 
@@ -184,6 +258,10 @@ audio.offload.gapless.enabled=true
 audio.offload.track.enable=false
 # Passthrough instead of decoding into PCM before HDMI/USB (it shrills after decoding please keep it true)
 audio.offload.passthrough=true
+# HAL or DSP update audio calibration/tuning values on the fly (gain tables, EQ filters, speaker protection data) without needing a full audio path restart (warmer but dull)
+#persist.vendor.audio.delta.refresh=true
+# Unsure
+vendor.audio.av.streaming.offload.enable=false
 
 # Higher quality and does not have extra processing compared to the deep_buffer output (didn't a/b, did no harm anyways)
 audio.deep_buffer.media=false
@@ -199,23 +277,28 @@ persist.bt.sbc_hd_enabled=1
 persist.bluetooth.sbc_hd_higher_bitrate=1
 # Increase thread priorities for bluetooth
 ro.vendor.af.raise_bt_thread_prio=true
-# AAC frame control. Similar stuffs.
+# AAC frame control. (Not sure enabling this change anything)
 persist.vendor.bt.aac_frm_ctl.enabled=true
-# Variable frame control. No idea no harm done.
+# Variable frame control. (Make AAC sounds different. I think this is fine for a codec that does just have worse implementation on Android than IOS)
 persist.vendor.bt.aac_vbr_frm_ctl.enabled=true
-# Unsure, will test later
+# Simply add treble, dull
 #persist.vendor.qcom.bluetooth.aac_frm_ctl.enabled=true
 #persist.vendor.qcom.bluetooth.aac_vbr_ctl.enabled=true
-# Adaptive bit-rate, disable for highest quality connection always. (badly increase upper mid peaks a lot)
+# Adaptive bit-rate, disable for highest quality connection always. (badly increase upper mid peaks a lot, dull)
 #persist.bluetooth.a2dp_aac_abr.enable=false
 # The standard TWSP allows passing audio to 2 channels at the same time instead of one earbud to another. Consider 2 devices as one.
 # Enable TWSP (expand the sound-stage but unnatural)
 #persist.vendor.btstack.enable.twsplus=true
-# Single/secondary headset operation? Idk  (the mid and high are much more clean but hurt my ears.)
-# You either comment out both this and the one above or leave both of these on for good sound
+# Single/secondary headset operation? Idk  (the mid and high are much more clean but hurt my ears, less natural as well)
+# Should be enabled along with TWSP enabler
 #persist.vendor.btstack.enable.twsplussho=true
 # State management. Disable to avoid TWSP interferences. (Lose bass and sound-stage if set to true even when non-TWS devices)
 persist.vendor.qcom.bluetooth.twsp_state.enabled=false
+# Not part of the standard Android AOSP or Qualcomm documented flags (ice-picking treble)
+#persist.vendor.bluetooth.connection_improve=yes
+# Master – the phone controls the timing of the connection and the piconet.
+# Slave – the phone follows the master’s clock/timing.
+#persist.vendor.bluetooth.prefferedrole=master
 
 # Enable A2DP (this part will do wonders to your bluetooth audio)
 audio.effect.a2dp.enable=1
@@ -238,29 +321,22 @@ persist.vendor.bt.a2dp_offload_cap=sbc-aptx-aptxtws-aptxhd-aac-ldac
 # Changing codec or connecting bluetooth when a track is playing will cause audio to leak to the phone speakers. You'll just need to replay they song so they come back to bluetooth.
 # You can prevent that by pausing the song before reconnecting.
 persist.bluetooth.a2dp_offload.disabled=true
-# Enables split A2DP processing, which separates codec handling
-# A tweak to prevent weird high pitch when using A2DP with 44.1kHz (unnatural)
-# Not properly tested
-#persist.vendor.bt.splita2dp.44_1_war=true
-# Probably placebo. I feel better having this little guy on.
-# Who is the little cute prop tweak? Who is it? Who is it? It's you!! TRUE!!
-# Not properly tested
+# Enables split A2DP processing, which separates codec handling. There might be some ice-picking treble added, also sound slightly dull and unnatural.
 #persist.vendor.btstack.enable.splita2dp=true
-
-
-# These seem to only work in vendor build.prop
-# Remove silly volume warning
-audio.safemedia.bypass=true
-persist.speaker.prot.enable=false
-# Protect the phone speakers from damages. Settings to 0 is susected to distort bass.
-#persist.config.speaker_protect_enabled=0
-#
-vendor.audio.feature.spkr_prot.enable=false
-# Volume steps
-# *preferrence*
-ro.config.media_vol_steps=100
-# Enable hardware volume control. Said to avoid clipping and distortion. Unable to test.
-#ro.vendor.audio.gain.support=true
+# Work-around (war) for 44.1 which basically EQ to migitate the weird ice-picking treble mentioned. Which happens without split A2DP enabled as well? (Even more dull sadly)
+#persist.vendor.bt.splita2dp.44_1_war=true
+# Communicate with \"Wireless Speaker Amplifier\" (sound dull)
+#vendor.audio.feature.wsa.enable=true
+# For LE audio to treat TWS as one single devices (Add tons of head spaces but a bit more dull.)
+#ro.vendor.bluetooth.csip_qti=true
+# The modern AIDL instead of HIDL for modern codecs. It's already default nowadays. (More details without obvious trade-off, not my preference though)
+#persist.vendor.qcom.bluetooth.aidl_hal=true
+# Cross-Channel monitors R/L channels to adjust for avoiding issues like imbalance or distortion (dull)
+#persist.vendor.audio.cca.enabled=false
+# Disables or minimizes SBC (fallback codec) bitpool allocation. Maybe more dull but can be placebo.
+#persist.bluetooth.a2dp.sbc_bitpool=0
+# LDAC adaptive bit-rate (doesn't work)
+#vendor.bluetooth.ldac.abr=false
 
 # VR capability
 persist.audio.vr.enable=true
@@ -271,7 +347,6 @@ debug.enable-vr-mode=0
 # HAL suspended instead of full restart for effieciency
 vendor.audio.hal.output.suspend.supported=true
 vendor.audio.feature.keep_alive.enable=true
-vendor.audio.feature.thermal_listener.enable=false
 
 # Quality recording
 #audio.record.delay=0
@@ -292,39 +367,134 @@ persist.vendor.audio.endcall.delay=0
 #persist.vendor.audio.record.ull.support=true
 #vendor.audio.chk.cal.us=1
 
+
+
+
+
 # Enables internal codec for HiFi in core audio.
-# Tied to vendor HAL. Defaults to false. Allows high-resolution audio playback. (More instrument seperation)
-vendor.audio.feature.hifi_audio.enable=true
-# May increase CPU load if not hardware-accelerated. It makes the sounds tasteless I don't like it.
+# These interact with each other in a very weird way. Some don't have good synergy with another.
+# 1,2,3 is a good start for sweet and magical sound
+
+# May increase CPU load if not hardware-accelerated. It makes the sounds tasteless I don't like it. (1)
 persist.audio.hifi.int_codec=false
-# I thought it's supposed to do the same thing but it makes the overall sound sweet and pleasant for some reasons.
+# I thought it's supposed to do the same thing but it makes the overall sound sweet and pleasant for some reasons. (2)
 persist.vendor.audio.hifi.int_codec=true
-# Higher sample rates and reducing jitter (Crisp and cleaner)
-ro.hardware.hifi.support=true
-# Reduce latency, distortion for wired. Has no direct tie to official HiFi standards. (Crisp and cleaner)
+# Sweet and clean (add a bit of upper mid peak though) (3)
 audio.feature.hifi_audio.enable=true
-# Supports high-res formats (I find these to add a tons more instrument seperation to the sound)
+
+# Tied to vendor HAL. Defaults to false. Allows high-resolution audio playback. (Expand sound-stage, does not have good synergy with 1,2,3,12) (4)
+vendor.audio.feature.hifi_audio.enable=true
+
+# Higher sample rates and reducing jitter (Cleaner signal) (5)
+ro.hardware.hifi.support=true
+
+# (I find these to add a tons more instrument seperation to the sound) (6)
 ro.audio.hifi=true
-ro.vendor.audio.hifi=true
+# (7)
 persist.audio.hifi=true
+# (8)
+ro.vendor.audio.hifi=true
+# (9)
 persist.vendor.audio.hifi=true
-# Sound darn analytic. Treble is now clean.
-ro.config.hifi_enhance_support=1
-# test
+
+
+# Sound darn analytic but tasteless (10)
+#ro.config.hifi_enhance_support=1
+# Expand sound-stage and tasteless. 1,2,3,12. (11)
 #persist.vendor.audio.hifi_enabled=true
+# Every instruments sound focused on the mix at the same time. The mid is very thin and on top of the head however. (12)
 #ro.config.hifi_config_state=1
+# Balance out 1,2,3,12 quite a lot, fresh mid if 10 and 11 weren't enabled (13)
 #persist.audio.hifi_adv_support=1
+# Too thin
+#vendor.audio.usb.super_hifi=true
+# Ruined the sweetness, dull sound
+#persist.audio.hifi_dac=ON
 
+# Use more DSP power for voice recognition (no idea maybe fine)
+persist.vendor.audio.sva.conc.enabled=true
+# Why's this very dull? Lol
+#persist.vendor.audio.okg_hotword_ext_dsp=true
+# Keeps the voice-activation engine active even when other audio sessions are running
+# Sound more dull but the treble details are kinda nuts
+#persist.vendor.audio.va_concurrency_enabled=true
+# Wide-band speech for voice and assistance (im unsure but it doesnt feel right)
+#vendor.media.audiohal.btwbs=true
+# Can't pin point the differences maybe placebo. Commented out.
+#ro.vendor.audio.enhance.support=true
+# Same
+#ro.vendor.audio.spk.clean=true
+# Seem fine
+ro.vendor.audio.pastandby=true
+# Dynamic platform for DTS? (dull, tasteless)
+#ro.vendor.audio.dpaudio=true
+# Why?
+#ro.vendor.audio.spk.stereo=true
+# Analog to digital. I can't hear the effects. Better leave default.
+#ro.vendor.audio.dualadc.support=false
+# Honestly no idea
+#ro.vendor.audio.meeting.mode=true
+# No idea
+#persist.audio.hp=true
+# Did nothing
+#ro.vendor.platform.has.realoutputmode=true
+# Not sure if changed anything. NR noise reduction? NS noise suppression?
+#ro.vendor.audio_tunning.nr=1
+# Do no harm
+ro.vendor.audio.ns.support=true
+# No idea. Seem to darken the treble.
+#ro.vendor.media.support.omx2=true
+# Probaly ok
+persist.sys.audio.source=true
+# Why?
+#persist.vendor.audio.speaker.stereo=true
+# Seem to work? Or maybe placebo. Seem to have more resolution.
+ro.vendor.usb.support_analog_audio=true
 
+# Idk
+vendor.qc2audio.suspend.enabled=false
+# Dull
+#vendor.qc2audio.per_frame.flac.dec.enabled=true
+media.stagefright.thumbnail.prefer_hw_codecs=true
+ro.vendor.audio_tunning.dual_spk=1
+# Low latency (unsure)
+#persist.vendor.audio.ll_playback_bargein=true
 
+# Hot words activation
+ro.vendor.audio.soundtrigger.adjconf=true
+# Ok google with DSP if true
+#ro.audio.soundtrigger.lowpower=false
 
-
-
+# Expose Surround Sound Recording
+ro.vendor.audio.sdk.ssr=false
+ro.qc.sdk.audio.ssr=false
 persist.camera.HAL3.enabled=1
 camera.HAL3.enabled=1
 persist.camera.is_mode=4
 #camera.eis.enable=1
 burn_in_protection=1
+vendor.audio.camera.unsupport_low_latency=false
+# Disable recording and playback run at the same time.
+vendor.audio.rec.playback.conc.disabled=false
+vendor.voice.record.conc.disabled=false
+# Disable call and playback run at the same time
+vendor.voice.playback.conc.disabled=false
+vendor.voice.voip.conc.disabled=false
+#vendor.voice.path.for.pcm.voip=primary
+
+# Power Spectral Density (PSD) describes how the total power of a signal is distributed across different frequencies, showing how much power is concentrated at each frequency
+#ro.audio.resampler.psd.enable_at_samplerate=768000
+# No cut off (hmm)
+# 110 is the mod's value. The idea seems to be push cut-off over the limit.
+# However 110 drops the dynamic range
+# 0 does it better
+ro.audio.resampler.psd.cutoff_percent=0
+# How much unwanted frequencies are suppressed beyond the 179 db cutoff.
+# Sound dull maybe because 179 db isn't a good number
+#ro.audio.resampler.psd.stopband=179
+#ro.audio.resampler.psd.tbwcheat=110
+#ro.vendor.audio.frame_count_needed_constant=32768
+#ro.audio.resampler.psd.halfflength=408
 
 dalvik.vm.lockprof.threshold=8192
 #ENFORCE_PROCESS_LIMIT=false
@@ -435,129 +605,9 @@ persist.android.strictmode=0"
 # Ignored
 PLACE_HOLDER="
 
-vendor.audio.usb.super_hifi=true
-persist.audio.hifi_dac=ON
-
-
-
-# Wide-band speech for voice and assistance
-#vendor.media.audiohal.btwbs=true
-
-# Recently added, not fully tested
-
-# Disables or minimizes SBC (fallback codec) bitpool allocation, forcing the stack to prefer high-bitrate LDAC instead of dropping to SBC during negotiation. This indirectly locks LDAC at 990 kbps by reducing fallback incentives.
-persist.bluetooth.a2dp.sbc_bitpool=0
-
-# Use more DSP power for voice recognition
-persist.vendor.audio.sva.conc.enabled=true
-persist.vendor.audio.okg_hotword_ext_dsp=true
-# Keeps the voice-activation engine active even when other audio sessions are running
-persist.vendor.audio.va_concurrency_enabled=true
-
-# For LE audio to treat TWS as one single devices
-ro.vendor.bluetooth.csip_qti=true
-
-# Master – the phone controls the timing of the connection and the piconet.
-# Slave – the phone follows the master’s clock/timing.
-persist.vendor.bluetooth.prefferedrole=master
-
-# Not part of the standard Android AOSP or Qualcomm documented flags
-persist.vendor.bluetooth.connection_improve=yes
-
-
-# The modern AIDL instead of HIDL for modern codecs. It's already default nowadays.
-#persist.vendor.qcom.bluetooth.aidl_hal=true
-
-# HAL or DSP update audio calibration/tuning values on the fly (gain tables, EQ filters, speaker protection data) without needing a full audio path restart
-#persist.vendor.audio.delta.refresh=true
-# Adds a fixed delay so that the Bluetooth stack has more “headroom” to avoid audio dropouts / stutter, underrun pops or clicks
-#persist.vendor.audio.sys.a2h_delay_for_a2dp=50
-
-#
-vendor.audio.av.streaming.offload.enable=false
-vendor.audio.offload.track.enable=false
-vendor.audio.offload.multiple.enabled=false
-# Disable recording and playback run at the same time.
-vendor.audio.rec.playback.conc.disabled=true
-
-# Cross-Channel monitors R/L channels to adjust for avoiding issues like imbalance or distortion
-persist.vendor.audio.cca.enabled=false
-
-
-
-
-# AAC is processed in DSP
-#qcom.hw.aac.encoder=false
-#qcom.hw.aac.decoder=false
-#ro.vendor.audio.hw.aac.encoder=false
-#ro.vendor.audio.hw.aac.decoder=false
-#vendor.audio.hw.aac.encoder=true
-#persist.service.btui.use_aptx=1
-#persist.bt.enableAptXHD=true
-
-vendor.voice.path.for.pcm.voip=
-vendor.voice.playback.conc.disabled=
-vendor.voice.record.conc.disabled=
-vendor.voice.voip.conc.disabled=
-
-vendor.audio.use.sw.alac.decoder=true
-vendor.audio.use.sw.ape.decoder=true
-aac_adts_offload_enabled=false
-alac_offload_enabled=false
-ape_offload_enabled=false
-flac_offload_enabled=false
-qti_flac_decoder=false
-vorbis_offload_enabled=false
-wma_offload_enabled=false
-
-audio.decoder_override_check=true
-vendor.qc2audio.suspend.enabled=false
-vendor.qc2audio.per_frame.flac.dec.enabled=true
-media.stagefright.thumbnail.prefer_hw_codecs=true
-
-vendor.audio.feature.dsm_feedback.enable=true
-vendor.audio.feature.ext_hw_plugin.enable=true
-vendor.audio.feature.compress_meta_data.enable=false
-vendor.audio.feature.compr_cap.enable=false
-vendor.audio.feature.devicestate_listener.enable=false
-vendor.audio.feature.thermal_listener.enable=false
-vendor.audio.feature.power_mode.enable=true
-vendor.audio.feature.keep_alive.enable=true
-vendor.audio.feature.deepbuffer_as_primary.enable=false
-vendor.audio.feature.dmabuf.cma.memory.enable=true
-vendor.audio.feature.compress_in.enable=false
-vendor.audio.feature.battery_listener.enable=false
-vendor.audio.feature.custom_stereo.enable=true
-vendor.audio.feature.wsa.enable=true
-
-audio.spatializer.effect.util_clamp_min=300
-effect.reverb.pcm=1
-sys.vendor.atmos.passthrough=enable
-ro.vendor.audio.elus.enable=true
-ro.vendor.audio.3d.audio.support=true
-ro.vendor.audio.surround.support=true
-ro.vendor.media.video.meeting.support=true
-
-vendor.usb.analog_audioacc_disabled=false
-vendor.audio.sys.init=true
-vendor.audio.trace.enable=true
-vendor.audio.powerop=true
-vendor.audio.read.wsatz.type=true
-vendor.audio.powerhal.power.ul=true
-vendor.audio.powerhal.power.dl=true
-vendor.audio.hal.boot.timeout.ms=5000
-vendor.audio.LL.coeff=100
-vendor.audio.caretaker.at=true
-vendor.audio.matrix.limiter.enable=0
-vendor.audio.capture.enforce_legacy_copp_sr=true
-vendor.audio.snd_card.open.retries=50
-vendor.audio.volume.headset.gain.depcal=true
-vendor.audio.camera.unsupport_low_latency=false
-vendor.audio.lowpower=false
-
-
+# 248 means 0-3
+# 255 means 0-7
 vendor.audio.rt.mode=23
-vendor.audio.rt.mode.onlyfast=false
 vendor.audio.cpu.sched=31
 vendor.audio.cpu.sched.cpuset=248
 vendor.audio.cpu.sched.cpuset.binder=255
@@ -566,44 +616,8 @@ vendor.audio.cpu.sched.cpuset.af=248
 vendor.audio.cpu.sched.cpuset.hb=248
 vendor.audio.cpu.sched.cpuset.hso=248
 vendor.audio.cpu.sched.cpuset.he=248
-vendor.audio.cpu.sched.cpus=8
-vendor.audio.cpu.sched.onlyfast=false
 
-vendor.media.audio.ms12.downmixmode=on
-ro.audio.resampler.psd.enable_at_samplerate=192000
-ro.audio.resampler.psd.cutoff_percent=110
-ro.audio.resampler.psd.stopband=179
-ro.audio.resampler.psd.halfflength=408
-ro.audio.resampler.psd.tbwcheat=110
-ro.audio.soundtrigger.lowpower=false
-ro.vendor.audio_tunning.dual_spk=1
-ro.vendor.audio_tunning.nr=1
-ro.vendor.audio.frame_count_needed_constant=32768
-ro.vendor.audio.soundtrigger.wakeupword=5
-
-# Enhancement effects like DTS
-ro.vendor.audio.enhance.support=true
-
-ro.vendor.audio.spk.clean=true
-ro.vendor.audio.pastandby=true
-ro.vendor.audio.dpaudio=true
-ro.vendor.audio.spk.stereo=true
-ro.vendor.audio.dualadc.support=true
-ro.vendor.audio.meeting.mode=true
-ro.vendor.media.support.omx2=true
-ro.vendor.platform.disable.audiorawout=false
-ro.vendor.platform.has.realoutputmode=true
-ro.vendor.usb.support_analog_audio=true
-ro.mediaserver.64b.enable=true
-persist.audio.hp=true
-persist.sys.audio.source=true
-
-persist.vendor.audio.misoundasc=true
-
-persist.vendor.audio.speaker.stereo=true
-
-
-#
+# HW acceleration maybe (false is better and it adds a lot better instrument positioning though sound duller)
 use.non-omx.flac.decoder=false
 use.non-omx.aac.decoder=false
 use.non-omx.mp3.decoder=false
@@ -614,16 +628,19 @@ use.non-omx.ac4.decoder=false
 use.non-omx.opus.decoder=false
 use.non-omx.dsp.decoder=false
 use.non-omx.dsd.decoder=false
-use.non-omx.flac.encoder=false
-use.non-omx.aac.encoder=false
-use.non-omx.mp3.encoder=false
-use.non-omx.raw.encoder=false
-use.non-omx.qti.encoder=false
-use.non-omx.ac3.encoder=false
-use.non-omx.ac4.encoder=false
-use.non-omx.opus.encoder=false
-use.non-omx.dsp.encoder=false
-use.non-omx.dsd.encoder=false
+
+flac.sw.decoder.32bit.support=true
+aac.sw.decoder.32bit.support=true
+mp3.sw.decoder.32bit.support=true
+raw.sw.decoder.32bit.support=true
+ac3.sw.decoder.32bit.support=true
+eac3.sw.decoder.32bit.support=true
+eac3_joc.sw.decoder.32bit.support=true
+ac4.sw.decoder.32bit.support=true
+opus.sw.decoder.32bit.support=true
+qti.sw.decoder.32bit.support=true
+dsp.sw.decoder.32bit.support=true
+dsd.sw.decoder.32bit.support=true
 
 flac.sw.encoder.32bit.support=true
 aac.sw.encoder.32bit.support=true
@@ -651,6 +668,7 @@ vendor.audio.qti.sw.encoder.32bit=true
 vendor.audio.dsp.sw.encoder.32bit=true
 vendor.audio.dsd.sw.encoder.32bit=true
 
+# Compression efficiency, the higher the more dense the data. Can be 10, 100, 1000,... It's always sound too analystic and tasteless
 vendor.audio.flac.complexity.default=10
 vendor.audio.aac.complexity.default=10
 vendor.audio.mp3.complexity.default=10
@@ -662,70 +680,42 @@ vendor.audio.ac4.complexity.default=10
 vendor.audio.opus.complexity.default=10
 vendor.audio.dsp.complexity.default=10
 vendor.audio.dsd.complexity.default=10
-vendor.audio.flac.complexity.default=10
-vendor.audio.aac.complexity.default=10
-vendor.audio.mp3.complexity.default=10
-vendor.audio.qti.complexity.default=10
-vendor.audio.ac3.complexity.default=10
-vendor.audio.eac3.complexity.default=10
-vendor.audio.eac3_joc.complexity.default=10
-vendor.audio.ac4.complexity.default=10
-vendor.audio.opus.complexity.default=10
-vendor.audio.dsp.complexity.default=10
-vendor.audio.dsd.complexity.default=10
+
+# Indeed sound more high quality. Like it has more resolution to the air and treble but dull.
+vendor.audio.flac.quality=100
+vendor.audio.aac.quality=100
+vendor.audio.mp3.quality=100
+vendor.audio.raw.quality=100
+vendor.audio.ac3.quality=100
+vendor.audio.eac3.quality=100
+vendor.audio.eac3_joc.quality=100
+vendor.audio.ac4.quality=100
+vendor.audio.opus.quality=100
+vendor.audio.qti.quality=100
+vendor.audio.dsp.quality=100
+vendor.audio.dsd.quality=100
 
 # No test no trust, just better leave default
 
 # Said to increase volume without distortion.
-#persist.audio.hifi.volume=100
-#persist.audio.hifi.volume=1
+persist.audio.hifi.volume=100
+persist.audio.hifi.volume=1
 # Minimum track length (in seconds) for offload. Short sounds (notifications, ringtones) stay on CPU to avoid DSP overhead.
-#audio.offload.min.duration.secs=15
+audio.offload.min.duration.secs=15
 # Size of DSP buffer for offload streams. Larger buffer = smoother playback but more latency.
-#audio.offload.buffer.size.kb=64
+audio.offload.buffer.size.kb=64
 # 192 256 480 1024 4096. Buffering size.
-#audio_hal.period_size=192
+audio_hal.period_size=192
+vendor.audio.hal.boot.timeout.ms=5000
+# Adds a fixed delay so that the Bluetooth stack has more “headroom” to avoid audio dropouts / stutter, underrun pops or clicks
+persist.vendor.audio.sys.a2h_delay_for_a2dp=50
 
-# Expansion of the capabilities of the DSP module.
-#vendor.audio.capture.enforce_legacy_copp_sr=true
-#vendor.audio.feature.dynamic_ecns.enable=true
-#vendor.audio.feature.external_dsp.enable=true
-#vendor.audio.feature.external_qdsp.enable=true
-#vendor.audio.feature.external_speaker.enable=true
-#vendor.audio.feature.external_speaker_tfa.enable=true
-#vendor.audio.feature.receiver_aided_stereo.enable=true
-#vendor.audio.feature.ext_hw_plugin=true
-#vendor.audio.feature.source_track_enabled=true
-#
-#vendor.audio.feature.devicestate_listener.enable=false
-#vendor.audio.feature.power_mode.enable=true
-# Hot words activation
-#ro.vendor.audio.soundtrigger.adjconf=true
-# Hot words DSP
-#ro.audio.soundtrigger.lowpower=false
-#vendor.audio.snd_card.open.retries=50
-# Noise supression
-#ro.vendor.audio.ns.support=true
-# Low latency
-#persist.vendor.audio.ll_playback_bargein=true
-# Battery current level ignore
-#persist.vendor.audio.bcl.enabled=false
-# Expose Surround Sound Recording
-#ro.vendor.audio.sdk.ssr=false
-#ro.qc.sdk.audio.ssr=false
-# Lock LDAC to highest bit-rate (doesn't work)
-vendor.bluetooth.ldac.abr=false
 # In the dev settings
-#persist.vendor.btsatck.absvolfeature=false
-
-#ro.config.hw_dts=true
-#ro.config.hw_dolby=true
-#audio.dolby.ds2.enabled=true
+persist.vendor.btsatck.absvolfeature=false
 
 # Microsoft smooth streaming. Deprecated.
 #mm.enable.smoothstreaming=true
 #vendor.mm.en.sec.smoothstreaming=true"
-
 
 # Loop through each line of the string
 echo "$PROPS_STRING" | while IFS= read -r line; do
