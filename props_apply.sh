@@ -112,13 +112,10 @@ vendor.audio.feature.compressed_audio.enable=false
 # Enable the compensation step inside the audio HAL / DSP. False for raw. (Having it false sound dull, true then harsh)
 #ro.vendor.audio.ce.compensation.need=true
 # Codec gain offset. Can only be integers.
-# Over 6 will cause a lot of upper mid peaks.
-# 6 is the most lively. Feel like a stadium.
+# 7 or above will cause a lot of upper mid peaks and lower overall volume a lot.
+# 6 is the most lively. Feel like a stadium. The most realistic sound-stage.
 # 5 is dull.
-# 4 is warmer, thicker.
-# 3
-# 2
-# 1
+# 1, 2, 3, 4 is warmer, thicker.
 ro.vendor.audio.ce.compensation.value=6
 # Said to increase volume without distortion. MY FKIN EARS AHHHH. Upper mid peaks + nausea.
 #persist.audio.hifi.volume=200
