@@ -65,18 +65,32 @@ vendor.audio.adm.buffering.ms=0
 #vendor.audio.feature.custom_stereo.enable=true
 # Dull
 #vendor.audio.cpu.sched.cpus=8
-# These 2 work on each other synergetically
-# Less grainy, smooth but unnatural, slightly warmer
+
+# These 2 together with PSD props get rid of the digital-ish sound/noises/artifacts which make the audio sound very real
+# Less grainy, smooth, better micro details.
 vendor.audio.rt.mode.onlyfast=false
-# Completely smooth. Better instrument separation. Without sacrificing sweetness.
+# Smooth, crystal clear, instruments separation and accurate positioning.
 vendor.audio.cpu.sched.onlyfast=false
-# Enhance low ultra sound (human inaudible frequencies theoretically)
-# Sound huge but soundstage doesn't expand. Slightly warmer.
+
+# Enhance low ultra sound (human inaudible frequencies expansion)
 # All instruments became more obvious and appear altogether.
-# It's a weird experience. You may want to comment this out for a more original sound.
 ro.vendor.audio.elus.enable=true
-# Fuller stereo (Stereo sound much more obvious for some reasons)
+# Fuller stereo dynamics (Stereo sound much more obvious for some reasons)
 vendor.audio.feature.receiver_aided_stereo.enable=true
+
+# Power Spectral Density (PSD) describes how the total power of a signal is distributed across different frequencies, showing how much power is concentrated at each frequency
+#ro.audio.resampler.psd.enable_at_samplerate=768000
+# No cut off (hmm)
+# 110 is the mod's value. The idea seems to be push cut-off over the limit.
+# However 110 drops the dynamic range
+# 0 does it better
+ro.audio.resampler.psd.cutoff_percent=0
+ro.audio.resampler.psd.tbwcheat=0
+# How much unwanted frequencies are suppressed beyond the 179 db cutoff.
+# Sound dull maybe because 179 db isn't a good number
+#ro.audio.resampler.psd.stopband=179
+#ro.vendor.audio.frame_count_needed_constant=32768
+#ro.audio.resampler.psd.halfflength=408
 
 # Passing raw format directly to audio outputs. Default value is empty. Other values are compressed formats like aac.
 audio.usb.default.format=pcm
@@ -95,12 +109,23 @@ vendor.audio.feature.compr_cap.enable=false
 vendor.audio.feature.compr_voip.enable=false
 # More treble extension but more dull
 vendor.audio.feature.compressed_audio.enable=false
-# Enable the compensation step inside the audio HAL / DSP. False for raw. (Having it false sound dull)
-#ro.vendor.audio.ce.compensation.need=false
-# Gain offset
-#ro.vendor.audio.ce.compensation.value=5
+# Enable the compensation step inside the audio HAL / DSP. False for raw. (Having it false sound dull, true then harsh)
+#ro.vendor.audio.ce.compensation.need=true
+# Codec gain offset. Can only be integers.
+# Over 6 will cause a lot of upper mid peaks.
+# 6 is the most lively. Feel like a stadium.
+# 5 is dull.
+# 4 is warmer, thicker.
+# 3
+# 2
+# 1
+ro.vendor.audio.ce.compensation.value=6
+# Said to increase volume without distortion. MY FKIN EARS AHHHH. Upper mid peaks + nausea.
+#persist.audio.hifi.volume=200
 # May have done nothing to the sound
 #vendor.audio.volume.headset.gain.depcal=true
+# Sound-stage is smaller but oddly pleasant. The sound-stage is narrowed down to where exactly the IEM's drivers is.
+#vendor.audio.feature.external_dsp.enable=true
 
 #vendor.audio.compress_capture.enabled=false
 #vendor.audio.compress_capture.aac=false
@@ -132,8 +157,6 @@ ro.vendor.platform.disable.audiorawout=false
 vendor.audio.feature.ext_hw_plugin=true
 # HW noise suppression (thinner mid but doesn't ruin the sweetness)
 #vendor.audio.feature.dynamic_ecns.enable=true
-# Sound-stage is smaller but oddly pleasant. The sound-stage is narrowed down to where exactly the IEM's drivers is.
-#vendor.audio.feature.external_dsp.enable=true
 # Still sweet but there's something else I don't like about it
 #vendor.audio.feature.external_qdsp.enable=true
 # Still sweet but is it more harsh or it's already it like that before? Not worth anyways
@@ -211,7 +234,6 @@ vendor.audio.qti.sw.decoder.32bit=true
 vendor.audio.dsp.sw.decoder.32bit=true
 vendor.audio.dsd.sw.decoder.32bit=true
 
-
 persist.vendor.audio.format.32bit=true
 persist.vendor.audio_hal.dsp_bit_width_enforce_mode=32
 # Seem doing nothing
@@ -229,8 +251,8 @@ persist.vendor.audio_hal.dsp_bit_width_enforce_mode=32
 # If you intend to change offloading flags, be aware of A2DP offloading as well. Bluetooth might be broken and very muddy if you mess things up.
 # Offload true, sf hw 1=> EQ works on all apps, some weird old games would crash
 # Offload true, sf hw 0 => EQ only works with music player. Stable.
-# Offload false, sf hw 1 => EQ works on all apps, some weird old games would crash
-# Offload false, sf hw 0 => EQ works on all apps, no apps crash, clean sound
+# Offload false, sf hw 1 => EQ works on all apps, no apps crash
+# Offload false, sf hw 0 => EQ works on all apps, clean sound
 debug.sf.hw=0
 audio.offload.enable=false
 # Layering this addition offload props cause the treble to sound very broken idk why
@@ -482,20 +504,6 @@ vendor.voice.playback.conc.disabled=false
 vendor.voice.voip.conc.disabled=false
 #vendor.voice.path.for.pcm.voip=primary
 
-# Power Spectral Density (PSD) describes how the total power of a signal is distributed across different frequencies, showing how much power is concentrated at each frequency
-#ro.audio.resampler.psd.enable_at_samplerate=768000
-# No cut off (hmm)
-# 110 is the mod's value. The idea seems to be push cut-off over the limit.
-# However 110 drops the dynamic range
-# 0 does it better
-ro.audio.resampler.psd.cutoff_percent=0
-# How much unwanted frequencies are suppressed beyond the 179 db cutoff.
-# Sound dull maybe because 179 db isn't a good number
-#ro.audio.resampler.psd.stopband=179
-#ro.audio.resampler.psd.tbwcheat=110
-#ro.vendor.audio.frame_count_needed_constant=32768
-#ro.audio.resampler.psd.halfflength=408
-
 dalvik.vm.lockprof.threshold=8192
 #ENFORCE_PROCESS_LIMIT=false
 #increase RAM usage
@@ -629,6 +637,33 @@ use.non-omx.opus.decoder=false
 use.non-omx.dsp.decoder=false
 use.non-omx.dsd.decoder=false
 
+# Indeed sound more high quality. Like it has more resolution to the air and treble but dull.
+vendor.audio.flac.quality=100
+vendor.audio.aac.quality=100
+vendor.audio.mp3.quality=100
+vendor.audio.raw.quality=100
+vendor.audio.ac3.quality=100
+vendor.audio.eac3.quality=100
+vendor.audio.eac3_joc.quality=100
+vendor.audio.ac4.quality=100
+vendor.audio.opus.quality=100
+vendor.audio.qti.quality=100
+vendor.audio.dsp.quality=100
+vendor.audio.dsd.quality=100
+
+vendor.audio.flac.sw.encoder.32bit=true
+vendor.audio.aac.sw.encoder.32bit=true
+vendor.audio.mp3.sw.encoder.32bit=true
+vendor.audio.raw.sw.encoder.32bit=true
+vendor.audio.ac3.sw.encoder.32bit=true
+vendor.audio.eac3.sw.encoder.32bit=true
+vendor.audio.eac3_joc.sw.encoder.32bit=true
+vendor.audio.ac4.sw.encoder.32bit=true
+vendor.audio.opus.sw.encoder.32bit=true
+vendor.audio.qti.sw.encoder.32bit=true
+vendor.audio.dsp.sw.encoder.32bit=true
+vendor.audio.dsd.sw.encoder.32bit=true
+
 flac.sw.decoder.32bit.support=true
 aac.sw.decoder.32bit.support=true
 mp3.sw.decoder.32bit.support=true
@@ -655,19 +690,6 @@ qti.sw.encoder.32bit.support=true
 dsp.sw.encoder.32bit.support=true
 dsd.sw.encoder.32bit.support=true
 
-vendor.audio.flac.sw.encoder.32bit=true
-vendor.audio.aac.sw.encoder.32bit=true
-vendor.audio.mp3.sw.encoder.32bit=true
-vendor.audio.raw.sw.encoder.32bit=true
-vendor.audio.ac3.sw.encoder.32bit=true
-vendor.audio.eac3.sw.encoder.32bit=true
-vendor.audio.eac3_joc.sw.encoder.32bit=true
-vendor.audio.ac4.sw.encoder.32bit=true
-vendor.audio.opus.sw.encoder.32bit=true
-vendor.audio.qti.sw.encoder.32bit=true
-vendor.audio.dsp.sw.encoder.32bit=true
-vendor.audio.dsd.sw.encoder.32bit=true
-
 # Compression efficiency, the higher the more dense the data. Can be 10, 100, 1000,... It's always sound too analystic and tasteless
 vendor.audio.flac.complexity.default=10
 vendor.audio.aac.complexity.default=10
@@ -681,25 +703,7 @@ vendor.audio.opus.complexity.default=10
 vendor.audio.dsp.complexity.default=10
 vendor.audio.dsd.complexity.default=10
 
-# Indeed sound more high quality. Like it has more resolution to the air and treble but dull.
-vendor.audio.flac.quality=100
-vendor.audio.aac.quality=100
-vendor.audio.mp3.quality=100
-vendor.audio.raw.quality=100
-vendor.audio.ac3.quality=100
-vendor.audio.eac3.quality=100
-vendor.audio.eac3_joc.quality=100
-vendor.audio.ac4.quality=100
-vendor.audio.opus.quality=100
-vendor.audio.qti.quality=100
-vendor.audio.dsp.quality=100
-vendor.audio.dsd.quality=100
-
 # No test no trust, just better leave default
-
-# Said to increase volume without distortion.
-persist.audio.hifi.volume=100
-persist.audio.hifi.volume=1
 # Minimum track length (in seconds) for offload. Short sounds (notifications, ringtones) stay on CPU to avoid DSP overhead.
 audio.offload.min.duration.secs=15
 # Size of DSP buffer for offload streams. Larger buffer = smoother playback but more latency.
