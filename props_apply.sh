@@ -63,8 +63,23 @@ vendor.audio.adm.buffering.ms=0
 
 # Custom stereo effect by vendor (?)
 #vendor.audio.feature.custom_stereo.enable=true
-# Dull
-#vendor.audio.cpu.sched.cpus=8
+
+# Which CPU core(s) the audio threads should be pinned or affined to (might be up to the device's board architecture)
+# 8 is dull
+# 1 is analytic but harsh
+# Set to 0 makes the bass cleaner, feel like the sound is more raw
+vendor.audio.cpu.sched.cpus=0
+# 248 means 0-3
+# 255 means 0-7
+#vendor.audio.rt.mode=23
+#vendor.audio.cpu.sched=31
+#vendor.audio.cpu.sched.cpuset=248
+#vendor.audio.cpu.sched.cpuset.binder=255
+#vendor.audio.cpu.sched.cpuset.at=248
+#vendor.audio.cpu.sched.cpuset.af=248
+#vendor.audio.cpu.sched.cpuset.hb=248
+#vendor.audio.cpu.sched.cpuset.hso=248
+#vendor.audio.cpu.sched.cpuset.he=248
 
 # These 2 together with PSD props get rid of the digital-ish sound/noises/artifacts which make the audio sound very real
 # Less grainy, smooth, better micro details.
@@ -609,18 +624,6 @@ persist.android.strictmode=0"
 
 # Ignored
 PLACE_HOLDER="
-
-# 248 means 0-3
-# 255 means 0-7
-vendor.audio.rt.mode=23
-vendor.audio.cpu.sched=31
-vendor.audio.cpu.sched.cpuset=248
-vendor.audio.cpu.sched.cpuset.binder=255
-vendor.audio.cpu.sched.cpuset.at=248
-vendor.audio.cpu.sched.cpuset.af=248
-vendor.audio.cpu.sched.cpuset.hb=248
-vendor.audio.cpu.sched.cpuset.hso=248
-vendor.audio.cpu.sched.cpuset.he=248
 
 # HW acceleration maybe (false is better and it adds a lot better instrument positioning though sound duller)
 use.non-omx.flac.decoder=false
