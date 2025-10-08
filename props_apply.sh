@@ -64,10 +64,11 @@ vendor.audio.adm.buffering.ms=0
 # Custom stereo effect by vendor (?)
 #vendor.audio.feature.custom_stereo.enable=true
 
-# Which CPU core(s) the audio threads should be pinned or affined to (might be up to the device's board architecture)
+# Limit the number of CPUs used for audio processing to avoid context switching that alters the audio signal.
 # 8 is dull
 # 1 is analytic but harsh
-# Set to 0 makes the bass cleaner, feel like the sound is more raw
+# Set to 0 makes the bass cleaner, feel like the sound is more raw but what does 0 means in this case?
+# Could stutter audio but very rarely
 vendor.audio.cpu.sched.cpus=0
 # 248 means 0-3
 # 255 means 0-7
