@@ -61,26 +61,28 @@ dev.pm.dyn_samplingrate=1
 # 0 minimizes buffering duration, results in reduced phase shifting, removes the wobbly stereo positioning effect to make the sound positions where they should be. Overall make the audio experience much more luxurious and spacious. At risk of CPU overrun on low-end devices however.
 vendor.audio.adm.buffering.ms=0
 
-# Custom stereo effect by vendor (?)
-#vendor.audio.feature.custom_stereo.enable=true
-
-# Limit the number of CPUs used for audio processing to avoid context switching that alters the audio signal.
-# 8 is dull
-# 1 is analytic but harsh
-# Set to 0 makes the bass cleaner, feel like the sound is more raw but what does 0 means in this case?
-# Could stutter audio but very rarely
+# 8 is dull. 1 narrow and dry. 0 luxurious open sound-stage more.
 vendor.audio.cpu.sched.cpus=0
+# Sibilant
+#vendor.audio.cpu.sched=31
 # 248 means 0-3
 # 255 means 0-7
-#vendor.audio.rt.mode=23
-#vendor.audio.cpu.sched=31
-#vendor.audio.cpu.sched.cpuset=248
-#vendor.audio.cpu.sched.cpuset.binder=255
+# Very good one
+vendor.audio.cpu.sched.cpuset=255
+# Maybe not
 #vendor.audio.cpu.sched.cpuset.at=248
+# Tasteless. No other trade-off though.
 #vendor.audio.cpu.sched.cpuset.af=248
+# Dull, muddy
 #vendor.audio.cpu.sched.cpuset.hb=248
+# Dull, muddy
 #vendor.audio.cpu.sched.cpuset.hso=248
+# Wide. Slightly more sibilant and tasteless.
 #vendor.audio.cpu.sched.cpuset.he=248
+# Similarly
+#vendor.audio.cpu.sched.cpuset.binder=255
+# 0 is tasteless. 23 peak upper mid, narrow sound-stage. 1 narrow sound-stage but extend treble and expand mid imaging (could be placebo).
+#vendor.audio.rt.mode=1
 
 # These 2 together with PSD props get rid of the digital-ish sound/noises/artifacts which make the audio sound very real
 # Less grainy, smooth, better micro details.
@@ -91,16 +93,19 @@ vendor.audio.cpu.sched.onlyfast=false
 # Enhance low ultra sound (human inaudible frequencies expansion)
 # All instruments became more obvious and appear altogether.
 ro.vendor.audio.elus.enable=true
-# Fuller stereo dynamics (Stereo sound much more obvious for some reasons)
+# Fuller stereo dynamics (Stereo sound much more obvious for some reasons but it gets warmer and slightly unpleasant when listening with one ear)
 vendor.audio.feature.receiver_aided_stereo.enable=true
+# Custom stereo effect by vendor (Expand stereo but in a very unnatural way, everything are further away. Didn't test it being alone. Maybe synergy.)
+#vendor.audio.feature.custom_stereo.enable=true
 
 # Power Spectral Density (PSD) describes how the total power of a signal is distributed across different frequencies, showing how much power is concentrated at each frequency
 #ro.audio.resampler.psd.enable_at_samplerate=768000
 # No cut off (hmm)
 # 110 is the mod's value. The idea seems to be push cut-off over the limit.
 # However 110 drops the dynamic range
-# 0 does it better
+# 0 does it better, extend dynamic range
 ro.audio.resampler.psd.cutoff_percent=0
+# Extend and add sweetness
 ro.audio.resampler.psd.tbwcheat=0
 # How much unwanted frequencies are suppressed beyond the 179 db cutoff.
 # Sound dull maybe because 179 db isn't a good number
@@ -164,8 +169,14 @@ ro.config.media_vol_steps=100
 # A bit more sibilant
 #vendor.audio.powerop=true
 
-# It's fine
+# Extend dynamic range
+#ro.platform.disable.audiorawout=false
 ro.vendor.platform.disable.audiorawout=false
+# No idea
+#persist.audio.uhqa=1
+#persist.vendor.audio.uhqa=1
+
+
 # Idk what this does but it sounds great, maybe placebo
 vendor.audio.feature.ext_hw_plugin=true
 # HW noise suppression (thinner mid but doesn't ruin the sweetness)
@@ -269,6 +280,7 @@ persist.vendor.audio_hal.dsp_bit_width_enforce_mode=32
 debug.sf.hw=0
 audio.offload.enable=false
 # Layering this addition offload props cause the treble to sound very broken idk why
+# Tried this singly. Seems to be tasteless.
 #vendor.audio.offload.enable=false
 # Redundant safeguard
 audio.offload.disable=true
@@ -316,6 +328,8 @@ ro.vendor.af.raise_bt_thread_prio=true
 persist.vendor.bt.aac_frm_ctl.enabled=true
 # Variable frame control. (Make AAC sounds different. I think this is fine for a codec that does just have worse implementation on Android than IOS)
 persist.vendor.bt.aac_vbr_frm_ctl.enabled=true
+# No aac compression
+vendor.audio.compress_capture.aac.cut_off_freq=0
 # Simply add treble, dull
 #persist.vendor.qcom.bluetooth.aac_frm_ctl.enabled=true
 #persist.vendor.qcom.bluetooth.aac_vbr_ctl.enabled=true
@@ -424,22 +438,28 @@ vendor.audio.feature.hifi_audio.enable=true
 ro.hardware.hifi.support=true
 
 # (I find these to add a tons more instrument seperation to the sound) (6)
-ro.audio.hifi=true
+#ro.audio.hifi=true
 # (7)
 persist.audio.hifi=true
 # (8)
-ro.vendor.audio.hifi=true
+#ro.vendor.audio.hifi=true
 # (9)
 persist.vendor.audio.hifi=true
 
+# 67 bad, 78 ok, 89 ok, 789 bad
+# 68 is good, sweet and clean, 689 not as much, 69 is better than the rest for now, very spacious
+# 679 is also sweet, spacious, but a bit peaky
+# 79 solve the peaky. It's perfect.
 
 # Sound darn analytic but tasteless (10)
+# Shrilling af when combined with 1,2,3,4,5,7,9
 #ro.config.hifi_enhance_support=1
-# Expand sound-stage and tasteless. 1,2,3,12. (11)
+# Expand sound-stage and tasteless. (11) 11 and 12 has very good synergy together create very separated mid but narrow sound-stage.
 #persist.vendor.audio.hifi_enabled=true
 # Every instruments sound focused on the mix at the same time. The mid is very thin and on top of the head however. (12)
 #ro.config.hifi_config_state=1
 # Balance out 1,2,3,12 quite a lot, fresh mid if 10 and 11 weren't enabled (13)
+# With 1, 2, 3, 4, 5, 6, 7, 8, 9, 12 then thin mid
 #persist.audio.hifi_adv_support=1
 # Too thin
 #vendor.audio.usb.super_hifi=true
@@ -479,8 +499,8 @@ ro.vendor.audio.pastandby=true
 ro.vendor.audio.ns.support=true
 # No idea. Seem to darken the treble.
 #ro.vendor.media.support.omx2=true
-# Probaly ok
-persist.sys.audio.source=true
+# Probaly ok (or placebo)
+#persist.sys.audio.source=true
 # Why?
 #persist.vendor.audio.speaker.stereo=true
 # Seem to work? Or maybe placebo. Seem to have more resolution.
@@ -625,6 +645,44 @@ persist.android.strictmode=0"
 
 # Ignored
 PLACE_HOLDER="
+ro.audio.ignore_effects=true
+ro.vendor.audio.ignore_effects=true
+vendor.audio.ignore_effects=true
+persist.audio.ignore_effects=true
+persis.vendor.audio.ignore_effects=true
+persist.sys.phh.disable_audio_effects=1
+ro.audio.disable_audio_effects=1
+vendor.audio.disable_audio_effects=1
+low.pass.filter=Off
+midle.pass.filter=Off
+high.pass.filter=Off
+band.pass.filter=Off
+LPF=Off
+MPF=Off
+HPF=Off
+BPF=Off
+
+ro.vendor.audio.sfx.speaker=false
+ro.vendor.audio.sfx.earadj=false
+ro.vendor.audio.sfx.scenario=false
+ro.vendor.audio.sfx.audiovisual=false
+ro.vendor.audio.sfx.independentequalizer=false
+vendor.audio.soundfx.usb=false
+ro.vendor.audio.soundfx.usb=false
+ro.vendor.soundfx.type=none
+ro.vendor.audio.soundfx.type=none
+persist.sys_phh.disable_audio_effects=1
+persist.sys.phh.disable_soundvolume_effect=1
+ro.audio.spatializer_enabled=false
+persist.vendor.audio.sfx.hd.eq=0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000
+persist.audio.fluence.voicecomm=false
+ro.vendor.audio.gain.support=false
+ro.vendor.audio.soundfx.type=none
+ro.vendor.audio.sfx.earadj=false
+ro.vendor.audio.sfx.scenario=false
+ro.vendor.audio.soundfx.usb=false
+ro.vendor.audio.surround.headphone.only=false
+
 
 # HW acceleration maybe (false is better and it adds a lot better instrument positioning though sound duller)
 use.non-omx.flac.decoder=false
