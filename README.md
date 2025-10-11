@@ -5,7 +5,7 @@ This version is fully stable and tested on Realme Q5 Pro and Motorola Edge 30 Ul
 
 Carefully tested props tweaks for clean, immersive, correctly positioned audio and extras.
 
-It would fix cheap DACs sounding harsh. Or grainy vocal you usually find from your phone speakers.
+It would fix cheap DACs sounding harsh. Or grainy / digital-ish vocal you usually find from your phone speakers.
 
 Also bring bluetooth audio very closed to wired bit-perfect audio. Fixed issues with the AAC sounding worse than SBC. LDAC also will be spicy and lack bass no more. Also with less latency now!
 
