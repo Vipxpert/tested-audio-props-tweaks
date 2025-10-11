@@ -31,12 +31,9 @@ Words are just words until you try this out for yourself!
 
 # Guide
 
-Gain root access with \"su\" then paste the entire script in Termux after installing the MagiskHidePropsConf module
+Install inside Magisk or Custom Recovery.
 
-In case of wanting to fallback, use \"props -r\"
+Offload version saves more battery.
 
-
-There're parts that are up to your preference and marked with \*preference\*.
-
-You can comment them out if you don't want them.
+Disable offload verion sounds better.
 
