@@ -1,4 +1,4 @@
-printf "y\nn\n" | props -r
+#printf "y\nn\n" | props -r
 PROPS_STRING="
 vm.laptop_mode=1
 vm.swapiness=0
@@ -278,37 +278,37 @@ persist.vendor.audio_hal.dsp_bit_width_enforce_mode=32
 # Offload false, sf hw 1 => EQ works on all apps, no apps crash
 # Offload false, sf hw 0 => EQ works on all apps, clean sound
 debug.sf.hw=0
-audio.offload.enable=false
+audio.offload.enable=true
 # Layering this addition offload props cause the treble to sound very broken idk why
 # Tried this singly. Seems to be tasteless.
 #vendor.audio.offload.enable=false
 # Redundant safeguard
-audio.offload.disable=true
+audio.offload.disable=false
 # Low power audio, theoretically is offload. Set it true and it sounds tasteless. 
 persist.vendor.btstack.enable.lpa=false
 # Don't change. Settings it to 1 with either offload enabled or disabled causes narrow sound-stage and shrills.
 mpq.audio.decode=0
 # PCM offload. Don't add 16 or 24-bit configuration here. They override 32-bit and causes terrible peaks and shout.
-audio.offload.32bit.enable=false
-vendor.audio.offload.32bit.enable=false
+audio.offload.32bit.enable=true
+#vendor.audio.offload.32bit.enable=false
 
 # Settings all to true with offload enabled is approved in most mods and community. If offloading's important to you, test for me. The DSP processing on my phone's just isn't my cup of tea maybe. I have a lot better sound-stage and pureness in the sound with the CPU doing it.
 # Video/audio offload (test with YouTube, Netflix,...)
-audio.offload.video=false
+audio.offload.video=true
 # Mutiple sound sessions (like notification + music) offload. If set to false, the DSP processes only one stream at a time. (Certainly sure this should be off)
-audio.offload.multiple.enabled=false
+audio.offload.multiple.enabled=true
 # Enables multiple concurrent AAC streams in offload mode. Useful for systems mixing AAC tracks or picture-in-picture video. Take effect even if offload is disabled. Sound much better if true.
 audio.offload.multiaac.enable=true
 # Gapless playback. Basically stop the DSP from turning off instantly. Would consume a bit more battery. Doesn't seem to affect the sound.
 audio.offload.gapless.enabled=true
 # Offload metadata/track handling (it would override offload)
-audio.offload.track.enable=false
+audio.offload.track.enable=true
 # Passthrough instead of decoding into PCM before HDMI/USB (it shrills after decoding please keep it true)
 audio.offload.passthrough=true
 # HAL or DSP update audio calibration/tuning values on the fly (gain tables, EQ filters, speaker protection data) without needing a full audio path restart (warmer but dull)
 #persist.vendor.audio.delta.refresh=true
 # Unsure
-vendor.audio.av.streaming.offload.enable=false
+vendor.audio.av.streaming.offload.enable=true
 
 # Higher quality and does not have extra processing compared to the deep_buffer output (didn't a/b, did no harm anyways)
 audio.deep_buffer.media=false
@@ -352,8 +352,6 @@ persist.vendor.qcom.bluetooth.twsp_state.enabled=false
 # Enable A2DP (this part will do wonders to your bluetooth audio)
 audio.effect.a2dp.enable=1
 vendor.audio.effect.a2dp.enable=1
-# Vendor specific. Required to fully enable A2DP.
-vendor.audio.feature.a2dp_offload.enable=false
 # Expand A2DP to all codec. AAC sounds especially good and even better than LDAC now.
 persist.bt.a2dp.aptx_disable=false
 persist.bt.a2dp.aptx_hd_disable=false
@@ -365,11 +363,17 @@ persist.vendor.bt.a2dp.aac_whitelist=false
 # Putting codecs that are not supported in here somehow cause a2dp to not work
 #persist.vendor.btstack.a2dp_offload_cap=sbc-aptx-aptxtws-aptxhd-aptxadaptiver2-aac-ldac-lhdc
 persist.vendor.bt.a2dp_offload_cap=sbc-aptx-aptxtws-aptxhd-aac-ldac
+#persist.bluetooth.a2dp_offload.cap=sbc-aac-aptx-aptxhd-ldac
+#persist.vendor.qcom.bluetooth.a2dp_offload_cap=sbc-aptx-aptxtws-aptxhd-aac-ldac-aptxadaptiver2
+
 # The same settings can be found in developer option \"Disable A2DP hardware offload\"
 # If you have the master switch audio offload enabled. Don't disable a2dp offload. It'll make the audio to be insanely muddy and unbearable. Or else having offload disabled all together makes the sound to be extremely clean.
 # Changing codec or connecting bluetooth when a track is playing will cause audio to leak to the phone speakers. You'll just need to replay they song so they come back to bluetooth.
 # You can prevent that by pausing the song before reconnecting.
-persist.bluetooth.a2dp_offload.disabled=true
+persist.bluetooth.a2dp_offload.disabled=false
+# It changes the sound separatedly from the dev settings for whatever reasons
+vendor.audio.feature.a2dp_offload.enable=true
+
 # Enables split A2DP processing, which separates codec handling. There might be some ice-picking treble added, also sound slightly dull and unnatural.
 #persist.vendor.btstack.enable.splita2dp=true
 # Work-around (war) for 44.1 which basically EQ to migitate the weird ice-picking treble mentioned. Which happens without split A2DP enabled as well? (Even more dull sadly)
@@ -813,7 +817,7 @@ echo "$PROPS_STRING" | while IFS= read -r line; do
   fi
 
   echo "Executing: resetprop \"$key\" \"$value\""
-  resetprop "$key" "$value"
+  resetprop -n "$key" "$value"
 
 done
 
@@ -827,5 +831,8 @@ resetprop -p --delete audio.resolution.limit.16bit
 resetprop -p --delete audio.resolution.limit.24bit
 resetprop -p --delete audio.resolution.limit.32bit
 
-reboot
+resetprop -p --delete vendor.audio.use.sw.ape.decoder
+resetprop -p --delete vendor.audio.use.sw.alac.decoder
+
+#reboot
 exit
