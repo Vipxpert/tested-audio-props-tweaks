@@ -33,7 +33,7 @@ Words are just words until you try this out for yourself!
 
 Install inside Magisk or Custom Recovery.
 
-Offload version saves more battery.
+Disable offloading, switching off omx acceleration force the device to use the CPU for audio processing which is bit-perfect.
 
-Disable offload verion sounds better.
+Offload version saves more battery but sound worse (deprecated).
 
