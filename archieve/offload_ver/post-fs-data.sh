@@ -289,8 +289,8 @@ persist.vendor.btstack.enable.lpa=false
 # Don't change. Settings it to 1 with either offload enabled or disabled causes narrow sound-stage and shrills.
 mpq.audio.decode=0
 # PCM offload. Don't add 16 or 24-bit configuration here. They override 32-bit and causes terrible peaks and shout.
-audio.offload.32bit.enable=true
-#vendor.audio.offload.32bit.enable=false
+#audio.offload.32bit.enable=true
+vendor.audio.offload.32bit.enable=false
 
 # Settings all to true with offload enabled is approved in most mods and community. If offloading's important to you, test for me. The DSP processing on my phone's just isn't my cup of tea maybe. I have a lot better sound-stage and pureness in the sound with the CPU doing it.
 # Video/audio offload (test with YouTube, Netflix,...)
@@ -639,13 +639,17 @@ ro.tether.denied=false
 debug.mdpcomp.logs=0
 persist.android.strictmode=0"
 
-
-
-
-
-
-
-
+REMOVE_PROPS_STRING="
+vendor.audio.offload.enable
+audio.offload.32bit.enable
+media.resolution.limit.16bit
+media.resolution.limit.24bit
+media.resolution.limit.32bit
+audio.resolution.limit.16bit
+audio.resolution.limit.24bit
+audio.resolution.limit.32bit
+vendor.audio.use.sw.ape.decoder
+vendor.audio.use.sw.alac.decoder"
 
 # Ignored
 PLACE_HOLDER="
@@ -778,7 +782,7 @@ vendor.audio.hal.boot.timeout.ms=5000
 persist.vendor.audio.sys.a2h_delay_for_a2dp=50
 
 # In the dev settings
-persist.vendor.btsatck.absvolfeature=false
+persist.vendor.btsatck.absvolfeature=true
 
 # Microsoft smooth streaming. Deprecated.
 #mm.enable.smoothstreaming=true
@@ -821,18 +825,27 @@ echo "$PROPS_STRING" | while IFS= read -r line; do
 
 done
 
+# Loop through each line of the string
+echo "$REMOVE_PROPS_STRING" | while IFS= read -r line; do
+  # Skip lines starting with '#'
+  if [[ "$line" == \#* ]]; then
+    continue
+  fi
+
+  # Skip empty lines
+  if [ -z "$line" ]; then
+    continue
+  fi
+
+  # Trim whitespace (optional, but good practice)
+  line=$(echo "$line" | xargs)
+  
+  echo "Executing: resetprop -p --delete \"$line\""
+  resetprop -0 --delete "$line"
+
+done
+
 settings put global audio_safe_volume_state 0
-
-resetprop -p --delete media.resolution.limit.16bit
-resetprop -p --delete media.resolution.limit.24bit
-resetprop -p --delete media.resolution.limit.32bit
-
-resetprop -p --delete audio.resolution.limit.16bit
-resetprop -p --delete audio.resolution.limit.24bit
-resetprop -p --delete audio.resolution.limit.32bit
-
-resetprop -p --delete vendor.audio.use.sw.ape.decoder
-resetprop -p --delete vendor.audio.use.sw.alac.decoder
 
 #reboot
 exit

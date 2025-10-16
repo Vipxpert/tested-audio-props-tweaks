@@ -115,8 +115,8 @@ ro.audio.resampler.psd.tbwcheat=0
 
 # Passing raw format directly to audio outputs. Default value is empty. Other values are compressed formats like aac.
 audio.usb.default.format=pcm
-persist.audio.flinger.bypass=true
 vendor.audio.usb.pcm.direct=true
+persist.audio.flinger.bypass=true
 # Sound brighter. Not a great idea. Settings to 0 make it sounds more raw.
 effect.reverb.pcm=0
 # Disable dynamic range compression. The trade-off is that phone speakers cannot handle such dynamic range, resulting in limiter kicking in.
@@ -131,18 +131,35 @@ vendor.audio.feature.compr_voip.enable=false
 # More treble extension but more dull
 vendor.audio.feature.compressed_audio.enable=false
 # Enable the compensation step inside the audio HAL / DSP. False for raw. (Having it false sound dull, true then harsh)
-#ro.vendor.audio.ce.compensation.need=true
+#ro.vendor.audio.ce.compensation.need=false
 # Codec gain offset. Can only be integers.
 # 7 or above will cause a lot of upper mid peaks and lower overall volume a lot.
-# 6 is the most lively. Feel like a stadium. The most realistic sound-stage.
-# 5 is dull.
+# 6 is the most lively. Can be harsh.
+# 5 is balanced. Can be dull.
 # 1, 2, 3, 4 is warmer, thicker.
-ro.vendor.audio.ce.compensation.value=6
+# *preference*
+# Testing further decimal points
+# 5.41 is too much, 5.4 is too low
+# Probably 5.402 - 5.405
+# 5.402 is huge but drop the details and quite dull. Should be 5.403 - 5.404.
+# 5.404 is too much, hurt my ears. 5.403 works well but still can be refined more.
+# 5.4034 is very smooth. I think can be smoother. 35 is not ok.
+# 5.4036 is too much. 5.40345 is getting very close. Treble slightly grainy.
+# 5.4036451 is a bit under. Almost there.
+# 5.40364519 I'm starting to not know where to go next. 2 - 4 maybe.
+# 5.403645193 is insane but I still believe more can be done. (safe here)
+# 5.403451935 is better
+# 5.403451936 is too high
+# 5.40345193452 seems low. 5.403451934538 is still low. 5.40345193454 is too high however.
+# 5.403451934539851 sound very accurate. I still need another deviation but don't know where. +0.01 didnt work so maybe -0.01 later.
+ro.vendor.audio.ce.compensation.value=5.403451934539851
+
 # Said to increase volume without distortion. MY FKIN EARS AHHHH. Upper mid peaks + nausea.
-#persist.audio.hifi.volume=200
+# 0 is muddy and also better not make it more than 1
+persist.audio.hifi.volume=1
 # May have done nothing to the sound
 #vendor.audio.volume.headset.gain.depcal=true
-# Sound-stage is smaller but oddly pleasant. The sound-stage is narrowed down to where exactly the IEM's drivers is.
+# Sound-stage is smaller but oddly pleasant.
 #vendor.audio.feature.external_dsp.enable=true
 
 #vendor.audio.compress_capture.enabled=false
@@ -175,7 +192,6 @@ ro.vendor.platform.disable.audiorawout=false
 # No idea
 #persist.audio.uhqa=1
 #persist.vendor.audio.uhqa=1
-
 
 # Idk what this does but it sounds great, maybe placebo
 vendor.audio.feature.ext_hw_plugin=true
@@ -213,7 +229,6 @@ vendor.audio.feature.battery_listener.enable=false
 # Seem not affect anything
 vendor.audio.snd_card.open.retries=50
 
-
 # 0 - 2 (default) - 4 - 7. Default is 2. This one is truely wholesome.
 af.resampler.quality=7
 persist.af.resampler.quality=7
@@ -223,6 +238,7 @@ lpa30.decode=false
 lpa.releaselock=false
 lpa.use-stagefright=false
 tunnel.audio.encode=false
+vendor.audio.tunnel.encode=false
 qc.tunnel.audio.encode=false
 tunnel.audiovideo.decode=false
 tunnel.decode=false
@@ -243,20 +259,167 @@ audio.playback.mch.downsample=false
 vendor.audio.playback.mch.downsample=false
 persist.vendor.audio.playback.mch.downsample=false
 
-# Don't add 16 or 24-bit configuration here. They override.
-# No need of the encoding props here. They simply produce muddy and dark sound in my testings. I don't exactly understand the mechanism behind.
-vendor.audio.flac.sw.decoder.32bit=true
-vendor.audio.aac.sw.decoder.32bit=true
-vendor.audio.mp3.sw.decoder.32bit=true
-vendor.audio.raw.sw.decoder.32bit=true
-vendor.audio.ac3.sw.decoder.32bit=true
-vendor.audio.eac3.sw.decoder.32bit=true
-vendor.audio.eac3_joc.sw.decoder.32bit=true
-vendor.audio.ac4.sw.decoder.32bit=true
-vendor.audio.opus.sw.decoder.32bit=true
-vendor.audio.qti.sw.decoder.32bit=true
-vendor.audio.dsp.sw.decoder.32bit=true
-vendor.audio.dsd.sw.decoder.32bit=true
+flac.sw.encoder.32bit.support=true
+aac.sw.encoder.32bit.support=true
+mp3.sw.encoder.32bit.support=true
+raw.sw.encoder.32bit.support=true
+ac3.sw.encoder.32bit.support=true
+eac3.sw.encoder.32bit.support=true
+eac3_joc.sw.encoder.32bit.support=true
+ac4.sw.encoder.32bit.support=true
+opus.sw.encoder.32bit.support=true
+qti.sw.encoder.32bit.support=true
+dsp.sw.encoder.32bit.support=true
+dsd.sw.encoder.32bit.support=true
+wav.sw.encoder.32bit.support=true
+mpegh.sw.encoder.32bit.support=true
+alac.sw.encoder.32bit.support=true
+ape.sw.encoder.32bit.support=true
+amr_wb.sw.encoder.32bit.support=true
+g711_alaw.sw.encoder.32bit.support=true
+g711_mlaw.sw.encoder.32bit.support=true
+vorbis.sw.encoder.32bit.support=true
+dsd.sw.encoder.32bit.support=true
+3gpp.sw.encoder.32bit.support=true
+mpeg.sw.encoder.32bit.support=true
+wma.sw.encoder.32bit.support=true
+dts.sw.encoder.32bit.support=true
+truehd.sw.encoder.32bit.support=true
+
+flac.sw.decoder.32bit.support=true
+aac.sw.decoder.32bit.support=true
+mp3.sw.decoder.32bit.support=true
+raw.sw.decoder.32bit.support=true
+ac3.sw.decoder.32bit.support=true
+eac3.sw.decoder.32bit.support=true
+eac3_joc.sw.decoder.32bit.support=true
+ac4.sw.decoder.32bit.support=true
+opus.sw.decoder.32bit.support=true
+qti.sw.decoder.32bit.support=true
+dsp.sw.decoder.32bit.support=true
+dsd.sw.decoder.32bit.support=true
+wav.sw.decoder.32bit.support=true
+mpegh.sw.decoder.32bit.support=true
+alac.sw.decoder.32bit.support=true
+ape.sw.decoder.32bit.support=true
+amr_wb.sw.decoder.32bit.support=true
+g711_alaw.sw.decoder.32bit.support=true
+g711_mlaw.sw.decoder.32bit.support=true
+vorbis.sw.decoder.32bit.support=true
+dsd.sw.decoder.32bit.support=true
+3gpp.sw.decoder.32bit.support=true
+mpeg.sw.decoder.32bit.support=true
+wma.sw.decoder.32bit.support=true
+dts.sw.decoder.32bit.support=true
+truehd.sw.decoder.32bit.support=true
+
+# I have given up at trying combinations. Too many and it seem to just not work well.
+# raw + mpegh, raw + qti, raw + mpegh + qti, raw + wav, wav + mpegh, mpegh + qti, ac4 + mpegh
+# mpeg + mpegh twinkling treble, grainy
+# 6 if none of these are set to true (maybe a fallback). Emphasized upper mid. Shout.
+
+# 8 Lossless. Easy on ears and very detailed. Emphasized and a bit spicy at the very end treble.
+vendor.audio.use.sw.flac.decoder=false
+# 6 Balanced but not much details
+vendor.audio.use.sw.aac.decoder=false
+# 7 Bright and a bit thin mid. Instrument seperation and soundstage is very lively. Bad treble extension.
+vendor.audio.use.sw.mp3.decoder=false
+# 10 Basically pcm. Flawlessly clean and realistic. Flat. My third favourite.
+vendor.audio.use.sw.raw.decoder=false
+# 6 Grainy, bad extension. Very good bass and soundstage.
+vendor.audio.use.sw.ac3.decoder=false
+# 5 Exciting. Well-rounded except for the emphasize on upper mid.
+vendor.audio.use.sw.eac3.decoder=false
+# 6 Better than the one above with the \"zing\" on the treble. Very good.
+vendor.audio.use.sw.eac3_joc.decoder=false
+# 7 Also have the \"zing\". With better bass and 3D surround. Tonality is bright but no upper mid peak like the one above though still a bit thin.
+vendor.audio.use.sw.ac4.decoder=false
+# 6 Treble extension is almost lossless. Everything else is good and that's it.
+vendor.audio.use.sw.opus.decoder=false
+# 9 Brilliant, bright sounding. Fresh tonality. Make the ambient instruments sound very obvious. My favourite.
+vendor.audio.use.sw.qti.decoder=false
+# 4 Unnatural tonality. Soundstage is underwhelming. Smooth treble.
+vendor.audio.use.sw.dsp.decoder=false
+# 5 Lossless quality. Upper mid is a bit too much and thin. Soundstage is huge.
+vendor.audio.use.sw.dsd.decoder=false
+# 8 Lossless quality and no artifacts. Not as flat as raw.
+vendor.audio.use.sw.wav.decoder=false
+# 9 The most immersive, gigantic, cinematic. Though audibly not lossless. My second favourite.
+vendor.audio.use.sw.mpegh.decoder=false
+# 3 Dull and boring.
+vendor.audio.use.sw.alac.decoder=false
+# 2 Dull, harsh
+vendor.audio.use.sw.ape.decoder=false
+# 6 Not so sure. A bit bland.
+vendor.audio.use.amr_wb.sw.decoder=false
+# 7 reasonable emphasize on the upper mid in tonality, for details, not really. Big soundstage.
+vendor.audio.use.g711_alaw.sw.decoder=false
+# 8 an improved g711 alaw. Consistent upper mid. No sudden spike jump.
+vendor.audio.use.g711_mlaw.sw.decoder=false
+# 9 Dark and bloated bass.
+vendor.audio.use.vorbis.sw.decoder=false
+# 7 Emphasize on the upper mid.
+vendor.audio.use.3gpp.sw.decoder=false
+# 3 Upper mid hurts.
+vendor.audio.use.mpeg.sw.decoder=false
+# 8 Luxurious. Airy but dry.
+vendor.audio.use.wma.sw.decoder=true
+# 7 very wide and extended. Instrument separation is not good.
+vendor.audio.use.dts.sw.decoder=false
+# 10 cleanest and widest
+vendor.audio.use.truehd.sw.decoder=false
+
+vendor.audio.wma.quality=100
+
+# omx is a type of hardware acceleration communicator program
+# disabling it will make it fall back to software theoretically
+use.non-omx.flac.decoder=true
+use.non-omx.aac.decoder=true
+use.non-omx.mp3.decoder=true
+use.non-omx.raw.decoder=true
+use.non-omx.qti.decoder=true
+use.non-omx.ac3.decoder=true
+use.non-omx.ac4.decoder=true
+use.non-omx.opus.decoder=true
+use.non-omx.dsp.decoder=true
+use.non-omx.dsd.decoder=true
+use.non-omx.wav.decoder=true
+use.non-omx.mpegh.decoder=true
+use.non-omx.alac.decoder=true
+use.non-omx.ape.decoder=true
+use.non-omx.amr_wb.decoder=true
+use.non-omx.g711_alaw.decoder=true
+use.non-omx.g711_mlaw.decoder=true
+use.non-omx.vorbis.decoder=true
+use.non-omx.3gpp.decoder=true
+use.non-omx.mpeg.decoder=true
+use.non-omx.wma.decoder=true
+use.non-omx.dts.decoder=true
+use.non-omx.truehd.decoder=true
+# keep both. other the inconsistency will cause artifacts.
+use.non-omx.flac.encoder=true
+use.non-omx.aac.encoder=true
+use.non-omx.mp3.encoder=true
+use.non-omx.raw.encoder=true
+use.non-omx.qti.encoder=true
+use.non-omx.ac3.encoder=true
+use.non-omx.ac4.encoder=true
+use.non-omx.opus.encoder=true
+use.non-omx.dsp.encoder=true
+use.non-omx.dsd.encoder=true
+use.non-omx.wav.encoder=true
+use.non-omx.mpegh.encoder=true
+use.non-omx.alac.encoder=true
+use.non-omx.ape.encoder=true
+use.non-omx.amr_wb.encoder=true
+use.non-omx.g711_alaw.encoder=true
+use.non-omx.g711_mlaw.encoder=true
+use.non-omx.vorbis.encoder=true
+use.non-omx.3gpp.encoder=true
+use.non-omx.mpeg.encoder=true
+use.non-omx.wma.encoder=true
+use.non-omx.dts.encoder=true
+use.non-omx.truehd.encoder=true
 
 persist.vendor.audio.format.32bit=true
 persist.vendor.audio_hal.dsp_bit_width_enforce_mode=32
@@ -266,9 +429,9 @@ persist.vendor.audio_hal.dsp_bit_width_enforce_mode=32
 # If true sound like 128 kbps who even
 #audio.decoder_override_check=false
 
-# sound dull on both, better set to false
-#vendor.audio.use.sw.alac.decoder=false
-#vendor.audio.use.sw.ape.decoder=false
+# Suspect to not work lol.
+# Oh I see it's a video codec. Wheew I'm not affected by placebo lol.
+#vendor.audio.use.mp4a_latm.sw.decoder=false
 
 # Offload means passing audio processing to DSP instead of CPU, potentially saving power though may not be noticeable. Require testing
 # In my case, disabling offloading gives me slightly purer sound and less of the vague and foggy sound.
@@ -289,8 +452,8 @@ persist.vendor.btstack.enable.lpa=false
 # Don't change. Settings it to 1 with either offload enabled or disabled causes narrow sound-stage and shrills.
 mpq.audio.decode=0
 # PCM offload. Don't add 16 or 24-bit configuration here. They override 32-bit and causes terrible peaks and shout.
-audio.offload.32bit.enable=false
-#vendor.audio.offload.32bit.enable=false
+#audio.offload.32bit.enable=false
+vendor.audio.offload.32bit.enable=false
 
 # Settings all to true with offload enabled is approved in most mods and community. If offloading's important to you, test for me. The DSP processing on my phone's just isn't my cup of tea maybe. I have a lot better sound-stage and pureness in the sound with the CPU doing it.
 # Video/audio offload (test with YouTube, Netflix,...)
@@ -420,10 +583,6 @@ persist.vendor.audio.endcall.delay=0
 #persist.vendor.audio.record.ull.support=true
 #vendor.audio.chk.cal.us=1
 
-
-
-
-
 # Enables internal codec for HiFi in core audio.
 # These interact with each other in a very weird way. Some don't have good synergy with another.
 # 1,2,3 is a good start for sweet and magical sound
@@ -518,6 +677,9 @@ media.stagefright.thumbnail.prefer_hw_codecs=true
 ro.vendor.audio_tunning.dual_spk=1
 # Low latency (unsure)
 #persist.vendor.audio.ll_playback_bargein=true
+
+# In the dev settings
+persist.vendor.btsatck.absvolfeature=false
 
 # Hot words activation
 ro.vendor.audio.soundtrigger.adjconf=true
@@ -642,6 +804,20 @@ persist.android.strictmode=0"
 
 
 
+REMOVE_PROPS_STRING="
+media.resolution.limit.16bit
+media.resolution.limit.24bit
+media.resolution.limit.32bit
+audio.resolution.limit.16bit
+audio.resolution.limit.24bit
+audio.resolution.limit.32bit
+# Lossless codec
+#vendor.audio.use.sw.ape.decoder
+#vendor.audio.use.sw.alac.decoder
+# Lossy codec for immersion
+#vendor.audio.use.sw.mpegh.decoder
+audio.offload.32bit.enable
+vendor.audio.offload.enable"
 
 
 
@@ -649,6 +825,158 @@ persist.android.strictmode=0"
 
 # Ignored
 PLACE_HOLDER="
+# Indeed sound more high quality. More resolution to the air and treble.
+vendor.audio.flac.quality=100
+vendor.audio.aac.quality=100
+vendor.audio.mp3.quality=100
+vendor.audio.raw.quality=100
+vendor.audio.ac3.quality=100
+vendor.audio.eac3.quality=100
+vendor.audio.eac3_joc.quality=100
+vendor.audio.ac4.quality=100
+vendor.audio.opus.quality=100
+vendor.audio.qti.quality=100
+vendor.audio.dsp.quality=100
+vendor.audio.dsd.quality=100
+vendor.audio.wav.quality=100
+vendor.audio.mpegh.quality=100
+vendor.audio.alac.quality=100
+vendor.audio.ape.quality=100
+vendor.audio.amr_wb.quality=100
+vendor.audio.g711_alaw.quality=100
+vendor.audio.g711_mlaw.quality=100
+vendor.audio.vorbis.quality=100
+vendor.audio.3gpp.quality=100
+vendor.audio.mpeg.quality=100
+vendor.audio.wma.quality=100
+vendor.audio.dts.quality=100
+vendor.audio.truehd.quality=100
+
+# Don't add 16 or 24-bit configuration here. They override.
+# No need of the encoding props here. They simply produce muddy and dark sound in my testings. I don't exactly understand the mechanism behind.
+vendor.audio.flac.sw.decoder.32bit=true
+vendor.audio.aac.sw.decoder.32bit=true
+vendor.audio.mp3.sw.decoder.32bit=true
+vendor.audio.raw.sw.decoder.32bit=true
+vendor.audio.ac3.sw.decoder.32bit=true
+vendor.audio.eac3.sw.decoder.32bit=true
+vendor.audio.eac3_joc.sw.decoder.32bit=true
+vendor.audio.ac4.sw.decoder.32bit=true
+vendor.audio.opus.sw.decoder.32bit=true
+vendor.audio.qti.sw.decoder.32bit=true
+vendor.audio.dsp.sw.decoder.32bit=true
+vendor.audio.dsd.sw.decoder.32bit=true
+vendor.audio.wav.sw.decoder.32bit=true
+vendor.audio.mpegh.sw.decoder.32bit=true
+vendor.audio.alac.sw.decoder.32bit=true
+vendor.audio.ape.sw.decoder.32bit=true
+vendor.audio.amr_wb.sw.decoder.32bit=true
+vendor.audio.g711_alaw.sw.decoder.32bit=true
+vendor.audio.g711_mlaw.sw.decoder.32bit=true
+vendor.audio.vorbis.sw.decoder.32bit=true
+vendor.audio.3gpp.sw.decoder.32bit=true
+vendor.audio.mpeg.sw.decoder.32bit=true
+vendor.audio.wma.sw.decoder.32bit=true
+vendor.audio.dts.sw.decoder.32bit=true
+vendor.audio.truehd.sw.decoder32bit=true
+
+vendor.audio.flac.sw.encoder.32bit=false
+vendor.audio.aac.sw.encoder.32bit=false
+vendor.audio.mp3.sw.encoder.32bit=false
+vendor.audio.raw.sw.encoder.32bit=false
+vendor.audio.ac3.sw.encoder.32bit=false
+vendor.audio.eac3.sw.encoder.32bit=false
+vendor.audio.eac3_joc.sw.encoder.32bit=false
+vendor.audio.ac4.sw.encoder.32bit=false
+vendor.audio.opus.sw.encoder.32bit=false
+vendor.audio.qti.sw.encoder.32bit=false
+vendor.audio.dsp.sw.encoder.32bit=false
+vendor.audio.wav.sw.encoder.32bit=false
+vendor.audio.mpegh.sw.encoder.32bit=false
+vendor.audio.alac.sw.encoder.32bit=false
+vendor.audio.ape.sw.encoder.32bit=false
+vendor.audio.amr_wb.sw.encoder.32bit=false
+vendor.audio.g711_alaw.sw.encoder.32bit=false
+vendor.audio.g711_mlaw.sw.encoder.32bit=false
+vendor.audio.vorbis.sw.encoder.32bit=false
+vendor.audio.3gpp.sw.encoder.32bit=false
+vendor.audio.mpeg.sw.encoder.32bit=false
+vendor.audio.wma.sw.encoder.32bit=false
+vendor.audio.dts.sw.encoder.32bit=false
+vendor.audio.truehd.sw.encoder.32bit=false
+
+#
+vendor.audio.use.sw.flac.encoder=false
+#
+vendor.audio.use.sw.aac.encoder=false
+#
+vendor.audio.use.sw.mp3.encoder=false
+#
+vendor.audio.use.sw.raw.encoder=false
+#
+vendor.audio.use.sw.ac3.encoder=false
+#
+vendor.audio.use.sw.eac3.encoder=false
+#
+vendor.audio.use.sw.eac3_joc.encoder=false
+#
+vendor.audio.use.sw.ac4.encoder=false
+#
+vendor.audio.use.sw.opus.encoder=false
+#
+vendor.audio.use.sw.qti.encoder=false
+#
+vendor.audio.use.sw.dsp.encoder=false
+#
+vendor.audio.use.sw.dsd.encoder=false
+#
+vendor.audio.use.sw.wav.encoder=false
+#
+vendor.audio.use.sw.mpegh.encoder=true
+#
+vendor.audio.use.sw.alac.encoder=false
+#
+vendor.audio.use.sw.ape.encoder=false
+#
+vendor.audio.use.amr_wb.sw.encoder=false
+#
+vendor.audio.use.g711_alaw.sw.encoder=false
+#
+vendor.audio.use.g711_mlaw.sw.encoder=false
+#
+vendor.audio.use.vorbis.sw.encoder=false
+#
+vendor.audio.use.3gpp.sw.encoder=false
+#
+vendor.audio.use.mpeg.sw.encoder=false
+#
+vendor.audio.use.wma.sw.encoder=false
+#
+vendor.audio.use.dts.sw.encoder=false
+#
+vendor.audio.use.truehd.sw.encoder=false
+
+vendor.audio.AT.blocking=true
+vendor.audio.c2.preferred=true
+vendor.qc2audio.suspend.enabled=true
+vendor.qc2audio.per_frame.flac.dec.enabled=true
+ro.audio.flinger_standbytime_ms=2000
+
+vendor.audio.tunnel.encode=false
+persist.vendor.audio.ras.enabled=false
+vendor.audio.offload.buffer.size.kb=32
+audio.offload.video=true
+vendor.audio.offload.track.enable=true
+audio.deep_buffer.media=true
+vendor.voice.path.for.pcm.voip=true
+vendor.audio.offload.multiaac.enable=true
+vendor.audio.dolby.ds2.enabled=false
+vendor.audio.dolby.ds2.hardbypass=false
+vendor.audio.offload.multiple.enabled=false
+vendor.audio.offload.passthrough=false
+ro.vendor.audio.sdk.ssr=false
+vendor.audio.offload.gapless.enabled=true
+
 ro.audio.ignore_effects=true
 ro.vendor.audio.ignore_effects=true
 vendor.audio.ignore_effects=true
@@ -687,72 +1015,6 @@ ro.vendor.audio.sfx.scenario=false
 ro.vendor.audio.soundfx.usb=false
 ro.vendor.audio.surround.headphone.only=false
 
-
-# HW acceleration maybe (false is better and it adds a lot better instrument positioning though sound duller)
-use.non-omx.flac.decoder=false
-use.non-omx.aac.decoder=false
-use.non-omx.mp3.decoder=false
-use.non-omx.raw.decoder=false
-use.non-omx.qti.decoder=false
-use.non-omx.ac3.decoder=false
-use.non-omx.ac4.decoder=false
-use.non-omx.opus.decoder=false
-use.non-omx.dsp.decoder=false
-use.non-omx.dsd.decoder=false
-
-# Indeed sound more high quality. Like it has more resolution to the air and treble but dull.
-vendor.audio.flac.quality=100
-vendor.audio.aac.quality=100
-vendor.audio.mp3.quality=100
-vendor.audio.raw.quality=100
-vendor.audio.ac3.quality=100
-vendor.audio.eac3.quality=100
-vendor.audio.eac3_joc.quality=100
-vendor.audio.ac4.quality=100
-vendor.audio.opus.quality=100
-vendor.audio.qti.quality=100
-vendor.audio.dsp.quality=100
-vendor.audio.dsd.quality=100
-
-vendor.audio.flac.sw.encoder.32bit=true
-vendor.audio.aac.sw.encoder.32bit=true
-vendor.audio.mp3.sw.encoder.32bit=true
-vendor.audio.raw.sw.encoder.32bit=true
-vendor.audio.ac3.sw.encoder.32bit=true
-vendor.audio.eac3.sw.encoder.32bit=true
-vendor.audio.eac3_joc.sw.encoder.32bit=true
-vendor.audio.ac4.sw.encoder.32bit=true
-vendor.audio.opus.sw.encoder.32bit=true
-vendor.audio.qti.sw.encoder.32bit=true
-vendor.audio.dsp.sw.encoder.32bit=true
-vendor.audio.dsd.sw.encoder.32bit=true
-
-flac.sw.decoder.32bit.support=true
-aac.sw.decoder.32bit.support=true
-mp3.sw.decoder.32bit.support=true
-raw.sw.decoder.32bit.support=true
-ac3.sw.decoder.32bit.support=true
-eac3.sw.decoder.32bit.support=true
-eac3_joc.sw.decoder.32bit.support=true
-ac4.sw.decoder.32bit.support=true
-opus.sw.decoder.32bit.support=true
-qti.sw.decoder.32bit.support=true
-dsp.sw.decoder.32bit.support=true
-dsd.sw.decoder.32bit.support=true
-
-flac.sw.encoder.32bit.support=true
-aac.sw.encoder.32bit.support=true
-mp3.sw.encoder.32bit.support=true
-raw.sw.encoder.32bit.support=true
-ac3.sw.encoder.32bit.support=true
-eac3.sw.encoder.32bit.support=true
-eac3_joc.sw.encoder.32bit.support=true
-ac4.sw.encoder.32bit.support=true
-opus.sw.encoder.32bit.support=true
-qti.sw.encoder.32bit.support=true
-dsp.sw.encoder.32bit.support=true
-dsd.sw.encoder.32bit.support=true
-
 # Compression efficiency, the higher the more dense the data. Can be 10, 100, 1000,... It's always sound too analystic and tasteless
 vendor.audio.flac.complexity.default=10
 vendor.audio.aac.complexity.default=10
@@ -776,9 +1038,6 @@ audio_hal.period_size=192
 vendor.audio.hal.boot.timeout.ms=5000
 # Adds a fixed delay so that the Bluetooth stack has more “headroom” to avoid audio dropouts / stutter, underrun pops or clicks
 persist.vendor.audio.sys.a2h_delay_for_a2dp=50
-
-# In the dev settings
-persist.vendor.btsatck.absvolfeature=false
 
 # Microsoft smooth streaming. Deprecated.
 #mm.enable.smoothstreaming=true
@@ -816,23 +1075,34 @@ echo "$PROPS_STRING" | while IFS= read -r line; do
     continue
   fi
 
-  echo "Executing: resetprop \"$key\" \"$value\""
+  echo "Executing: resetprop -n \"$key\" \"$value\""
   resetprop -n "$key" "$value"
 
 done
 
+
+
+# Loop through each line of the string
+echo "$REMOVE_PROPS_STRING" | while IFS= read -r line; do
+  # Skip lines starting with '#'
+  if [[ "$line" == \#* ]]; then
+    continue
+  fi
+
+  # Skip empty lines
+  if [ -z "$line" ]; then
+    continue
+  fi
+
+  # Trim whitespace (optional, but good practice)
+  line=$(echo "$line" | xargs)
+  
+  echo "Executing: resetprop -p --delete \"$line\""
+  resetprop -p --delete "$line"
+
+done
+
 settings put global audio_safe_volume_state 0
-
-resetprop -p --delete media.resolution.limit.16bit
-resetprop -p --delete media.resolution.limit.24bit
-resetprop -p --delete media.resolution.limit.32bit
-
-resetprop -p --delete audio.resolution.limit.16bit
-resetprop -p --delete audio.resolution.limit.24bit
-resetprop -p --delete audio.resolution.limit.32bit
-
-resetprop -p --delete vendor.audio.use.sw.ape.decoder
-resetprop -p --delete vendor.audio.use.sw.alac.decoder
 
 #reboot
 exit
